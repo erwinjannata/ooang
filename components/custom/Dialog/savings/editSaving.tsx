@@ -19,10 +19,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { SavingsFormData, savingsSchema } from "@/schemas/forms/savings";
 import { SavingsUpdate } from "@/types/savings";
-import { useAuth } from "@/utils/authProvider";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { updateSavings } from "./actions";
 
 type Props = {
   selected: SavingsUpdate;
@@ -32,7 +33,6 @@ type Props = {
 };
 
 function EditSavingDialog({ selected, open, setOpen, setRefresh }: Props) {
-  const { profile, savings } = useAuth();
   const [loading, setLoading] = useState<boolean>(false);
   const form = useForm<SavingsFormData>({
     resolver: zodResolver(savingsSchema),
@@ -53,19 +53,19 @@ function EditSavingDialog({ selected, open, setOpen, setRefresh }: Props) {
 
   const onSubmit = async (formData: SavingsFormData) => {
     setLoading(true);
-    // const result = await updateExpenses({
-    //   data: formData,
-    //   selected: selected!,
-    // });
+    const result = await updateSavings({
+      saving: selected,
+      formData: formData,
+    });
 
-    // setLoading(false);
-    // if (!result.success) {
-    //   toast.error(result.message);
-    // } else {
-    //   toast.success(result.message);
-    //   setOpen(false);
-    //   setRefresh((r) => r + 1);
-    // }
+    setLoading(false);
+    if (!result.success) {
+      toast.error(result.message);
+    } else {
+      toast.success(result.message);
+      setOpen(false);
+      setRefresh((r) => r + 1);
+    }
   };
 
   return (

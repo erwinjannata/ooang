@@ -32,7 +32,8 @@ export async function fetchExpenses({pagination} : {pagination: PaginationType})
 export async function insertExpenses({ data, userId }: { data: ExpensesFormData, userId?: string }): Promise<ReturnType> {
     const supabase = await createClient();
 
-    const { error } = await supabase.from("expenses").insert({
+    // Insert new Row to Expense table
+    const { error: expenseError } = await supabase.from("expenses").insert({
         title: data.title,
         amount: data.amount,
         spend_from: data.spend_from,
@@ -41,7 +42,7 @@ export async function insertExpenses({ data, userId }: { data: ExpensesFormData,
         user_id: userId,
     })
 
-    if (error) return { success: false, message: error.message }
+    if (expenseError) return { success: false, message: expenseError.message }
 
     return { success: true, message: "Expenses recorded" }
 }

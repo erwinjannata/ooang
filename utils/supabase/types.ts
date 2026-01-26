@@ -27,7 +27,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
-          amount?: number
+          amount: number
           category?: Database["public"]["Enums"]["expense_category"]
           created_at?: string
           description?: string | null
@@ -72,6 +72,7 @@ export type Database = {
           id: string
           save_to: string
           title: string
+          user_id: string
         }
         Insert: {
           amount: number
@@ -79,6 +80,7 @@ export type Database = {
           id?: string
           save_to?: string
           title: string
+          user_id?: string
         }
         Update: {
           amount?: number
@@ -86,6 +88,7 @@ export type Database = {
           id?: string
           save_to?: string
           title?: string
+          user_id?: string
         }
         Relationships: [
           {
@@ -93,6 +96,13 @@ export type Database = {
             columns: ["save_to"]
             isOneToOne: false
             referencedRelation: "user_savings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "income_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "user_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -124,6 +134,7 @@ export type Database = {
           created_at: string
           id: string
           name: string
+          updated_at: string
           user_id: string
         }
         Insert: {
@@ -131,6 +142,7 @@ export type Database = {
           created_at?: string
           id?: string
           name: string
+          updated_at?: string
           user_id: string
         }
         Update: {
@@ -138,6 +150,7 @@ export type Database = {
           created_at?: string
           id?: string
           name?: string
+          updated_at?: string
           user_id?: string
         }
         Relationships: []
