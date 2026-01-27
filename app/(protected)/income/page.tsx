@@ -2,6 +2,7 @@
 
 import FloatingButton from "@/components/custom/Button/FloatingButton";
 import CustomAlertDialog from "@/components/custom/Dialog/customAlertDialog";
+import EditIncomeDialog from "@/components/custom/Dialog/income/editIncome";
 import NewIncomeDialog from "@/components/custom/Dialog/income/newIncome";
 import { getIncomeColumn } from "@/components/custom/Table/columns/income";
 import DataTable from "@/components/custom/Table/dataTable";
@@ -101,6 +102,12 @@ function IncomePage() {
       <NewIncomeDialog
         open={showNewDialog}
         setOpen={setShowNewDialog}
+        setRefresh={setRefresh}
+      />
+      <EditIncomeDialog
+        open={showEditDialog}
+        setOpen={setShowEditDialog}
+        selected={selected!}
         setRefresh={setRefresh}
       />
       <CustomAlertDialog

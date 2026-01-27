@@ -1,5 +1,5 @@
 function OoangDashboard() {
-  return <div>ini dia</div>;
+  return <div>OOang</div>;
 }
 
 export default OoangDashboard;

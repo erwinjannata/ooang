@@ -1,4 +1,4 @@
-import { updateExpenses } from "@/app/(protected)/expenses/actions";
+import { updateIncome } from "@/app/(protected)/income/actions";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -18,9 +18,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { ExpenseCategory } from "@/lib/constants/expenseCategory";
-import { ExpensesFormData, expensesSchema } from "@/schemas/forms/expenses";
-import { ExpensesUpdate } from "@/types/expenses";
+import { IncomeFormData, incomeSchema } from "@/schemas/forms/income";
+import { IncomeUpdate } from "@/types/income";
 import { useAuth } from "@/utils/authProvider";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
@@ -29,23 +28,21 @@ import { toast } from "sonner";
 import CustomSelect from "../../Select/select";
 
 type Props = {
-  selected: ExpensesUpdate;
+  selected: IncomeUpdate;
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
   setRefresh: Dispatch<SetStateAction<number>>;
 };
 
-function EditExpenseDialog({ selected, open, setOpen, setRefresh }: Props) {
+function EditIncomeDialog({ selected, open, setOpen, setRefresh }: Props) {
   const { profile, savings } = useAuth();
   const [loading, setLoading] = useState<boolean>(false);
-  const form = useForm<ExpensesFormData>({
-    resolver: zodResolver(expensesSchema),
+  const form = useForm<IncomeFormData>({
+    resolver: zodResolver(incomeSchema),
     defaultValues: {
       title: "",
       amount: 0,
-      category: "",
-      spend_from: "",
-      description: "",
+      save_to: "",
     },
   });
 
@@ -54,20 +51,17 @@ function EditExpenseDialog({ selected, open, setOpen, setRefresh }: Props) {
       form.reset({
         title: selected.title || "",
         amount: selected.amount || 0,
-        category: selected.category || "",
-        spend_from: selected.spend_from || "",
-        description: selected.description || "",
+        save_to: selected.save_to || "",
       });
     }
   }, [selected, form, open]);
 
-  const onSubmit = async (formData: ExpensesFormData) => {
+  const onSubmit = async (formData: IncomeFormData) => {
     setLoading(true);
-    const result = await updateExpenses({
+    const result = await updateIncome({
       data: formData,
       selected: selected!,
     });
-
     setLoading(false);
     if (!result.success) {
       toast.error(result.message);
@@ -126,28 +120,7 @@ function EditExpenseDialog({ selected, open, setOpen, setRefresh }: Props) {
               />
               <FormField
                 control={form.control}
-                name="category"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Category</FormLabel>
-                    <FormControl>
-                      <CustomSelect
-                        {...field}
-                        label="Category"
-                        groups={[
-                          { label: "Expense Category", items: ExpenseCategory },
-                        ]}
-                        disabled={loading}
-                        onChange={(val) => field.onChange(val)}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="spend_from"
+                name="save_to"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Saving</FormLabel>
@@ -159,30 +132,13 @@ function EditExpenseDialog({ selected, open, setOpen, setRefresh }: Props) {
                           {
                             label: `${profile?.display_name}'s savings`,
                             items: savings!.map((saving) => ({
-                              label: saving.name.toLocaleUpperCase(),
+                              label: saving.name,
                               value: saving.id,
                             })),
                           },
                         ]}
                         disabled={loading}
                         onChange={(val) => field.onChange(val)}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Description</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        value={field.value || ""}
-                        disabled={loading}
                       />
                     </FormControl>
                     <FormMessage />
@@ -210,4 +166,4 @@ function EditExpenseDialog({ selected, open, setOpen, setRefresh }: Props) {
   );
 }
 
-export default EditExpenseDialog;
+export default EditIncomeDialog;
