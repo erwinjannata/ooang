@@ -5,6 +5,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { toLocDate } from "@/hooks/toLocDate";
 import { ExpensesRow, ExpensesUpdate } from "@/types/expenses";
 import { Checkbox } from "@radix-ui/react-checkbox";
 import { ColumnDef } from "@tanstack/react-table";
@@ -85,6 +86,11 @@ export function getExpensesColumn({
 
         return <div className="uppercase">{expense.saving?.name}</div>;
       },
+    },
+    {
+      accessorKey: "created_at",
+      header: () => <div className="font-medium">Created at</div>,
+      cell: ({ row }) => <div>{toLocDate(row.getValue("created_at"))}</div>,
     },
     {
       id: "actions",

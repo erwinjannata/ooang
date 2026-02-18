@@ -1,14 +1,13 @@
 "use client";
 
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -17,27 +16,19 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
-import { navGroups } from "@/lib/constants/navItems";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { NavLinks } from "@/lib/constants/navItems";
 import { UserProfile } from "@/types/user";
 import { User } from "@supabase/supabase-js";
-import {
-  ChevronRight,
-  ChevronUp,
-  CircleUser,
-  CircleUserRound,
-  LogOut,
-} from "lucide-react";
+import { Bell, ChevronsUpDown, Coins, KeyRound, LogOut } from "lucide-react";
 import Link from "next/link";
-import { useId } from "react";
+import { ComponentProps } from "react";
 import { logout } from "./actions";
 
 type SidebarProps = {
@@ -45,64 +36,70 @@ type SidebarProps = {
   profile: UserProfile;
 };
 
-export function AppSidebar({ profile }: SidebarProps) {
-  const id = useId();
+export function AppSidebar({
+  user,
+  profile,
+  ...props
+}: SidebarProps & ComponentProps<typeof Sidebar>) {
+  const { isMobile } = useSidebar();
+  const isOnMobile = useIsMobile();
 
   return (
-    <Sidebar>
+    <Sidebar
+      collapsible="icon"
+      className="overflow-hidden *:data-[sidebar=sidebar]:flex-col"
+      {...props}
+    >
       <SidebarHeader>
         <SidebarMenu>
-          <SidebarMenuItem className="py-2 px-auto">
-            <Link href="/">
-              <h1 className="scroll-m-20 text-center text-4xl font-extrabold tracking-tight text-balance">
-                OOang
-              </h1>
-            </Link>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              size="lg"
+              asChild
+              className="md:h-8 md:p-0"
+              tooltip={{
+                children: "OOang",
+                className: "font-medium text-lg",
+                hidden: isOnMobile,
+              }}
+            >
+              <Link href="/home">
+                <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
+                  <Coins className="size-4" />
+                </div>
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                  <span className="truncate font-medium text-lg">OOang</span>
+                </div>
+              </Link>
+            </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        {navGroups.map((group) => (
-          <SidebarGroup key={group.label}>
-            <SidebarGroupLabel>{group.label}</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {group.content.map((content) => (
-                  <Collapsible
-                    className="group/collapsible"
-                    key={content.title}
+        <SidebarGroup>
+          <SidebarGroupContent className="px-1.5 md:px-0">
+            <SidebarMenu>
+              {NavLinks.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton
+                    tooltip={{
+                      children: item.title,
+                      hidden: isOnMobile,
+                    }}
+                    // isActive={activeItem?.title === item.title}
+                    className="px-2.5 md:px-2"
+                    asChild
                   >
-                    <SidebarMenuItem className="space-y-2">
-                      <CollapsibleTrigger asChild>
-                        <SidebarMenuSubButton
-                          className="flex justify-between items-center px-2 py-4"
-                          id={id}
-                        >
-                          <div className="flex flex-row items-center gap-4">
-                            <content.icon className="w-4 h-4" />
-                            <span className="font-medium">{content.title}</span>
-                          </div>
-                          <ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
-                        </SidebarMenuSubButton>
-                      </CollapsibleTrigger>
-                      <CollapsibleContent id={id}>
-                        <SidebarMenuSub>
-                          {content.items.map((item) => (
-                            <SidebarMenuSubItem key={item.title}>
-                              <SidebarMenuSubButton asChild>
-                                <Link href={item.url}>{item.title}</Link>
-                              </SidebarMenuSubButton>
-                            </SidebarMenuSubItem>
-                          ))}
-                        </SidebarMenuSub>
-                      </CollapsibleContent>
-                    </SidebarMenuItem>
-                  </Collapsible>
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        ))}
+                    <Link href={item.url}>
+                      <item.icon />
+                      <span>{item.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
         <SidebarMenu>
@@ -110,22 +107,55 @@ export function AppSidebar({ profile }: SidebarProps) {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <SidebarMenuButton
-                  className="flex justify-between items-center px-2 py-4 w-full h-auto"
-                  id={id}
+                  size="lg"
+                  className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground md:h-8 md:p-0"
                 >
-                  <CircleUserRound className="w-4 h-4" />
-                  <p className="text-sm leading-none font-medium">
-                    {profile.display_name}
-                  </p>
-                  <ChevronUp className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
+                  <Avatar className="h-8 w-8 rounded-lg">
+                    <AvatarImage
+                      src="https://github.com/shadcn.png"
+                      alt={profile.display_name}
+                    />
+                    <AvatarFallback className="rounded-lg"></AvatarFallback>
+                  </Avatar>
+                  <div className="grid flex-1 text-left text-sm leading-tight">
+                    <span className="truncate font-medium">
+                      {profile.display_name}
+                    </span>
+                  </div>
+                  <ChevronsUpDown className="ml-auto size-4" />
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
-              <DropdownMenuContent side="top" className="w-60" id={id}>
-                <DropdownMenuItem>
-                  <CircleUser /> <span>Account</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={logout} variant="destructive">
-                  <LogOut /> <span>Logout</span>
+              <DropdownMenuContent
+                className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+                side={isMobile ? "bottom" : "right"}
+                align="end"
+                sideOffset={4}
+              >
+                <DropdownMenuLabel className="p-0 font-normal">
+                  <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                    <div className="grid flex-1 text-left text-sm leading-tight">
+                      <span className="truncate font-medium">
+                        {profile.display_name}
+                      </span>
+                      <span className="truncate text-xs">{user.email}</span>
+                    </div>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuGroup>
+                  <DropdownMenuItem>
+                    <KeyRound />
+                    Manage Password
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Bell />
+                    Notifications
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem variant="destructive" onClick={logout}>
+                  <LogOut />
+                  Log out
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

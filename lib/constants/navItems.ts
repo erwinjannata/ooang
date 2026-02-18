@@ -1,48 +1,17 @@
-import { BanknoteArrowDown, ChartLine, LucideIcon } from "lucide-react";
+import { BanknoteArrowDown, BanknoteArrowUp, HandCoins, Handshake, Home, LucideIcon, PiggyBank } from "lucide-react";
 
-type NavGroupItem = {
+type NavItems = {
   title: string;
   url: string;
-};
-
-type NavGroupContent = {
-  title: string;
   icon: LucideIcon;
-  items: NavGroupItem[];
-};
+  isActive: boolean;
+}
 
-type NavGroup = {
-  label: string;
-  content: NavGroupContent[];
-};
-
-export const navGroups: NavGroup[] = [
-  {
-    label: "Tracker",
-    content: [
-      {
-        title: "Expenses Tracker",
-        icon: BanknoteArrowDown,
-        items: [
-          { title: "Home", url: "/home" },
-          { title: "Expenses", url: "/expenses" },
-          { title: "Income", url: "/income" },
-          { title: "Savings", url: "/savings"}
-        ],
-      },
-    ],
-  },
-  {
-    label: "Reports",
-    content: [
-      {
-        title: "Finance",
-        icon: ChartLine,
-        items: [
-          { title: "Debts", url: "/expenses" },
-          { title: "Receivables", url: "/income" },
-        ],
-      },
-    ],
-  },
+export const NavLinks : NavItems[] = [
+  {title: "Home", url: "/home", icon: Home, isActive: true},
+  {title: "Expenses", url: "/expenses", icon: BanknoteArrowUp, isActive: false},
+  {title: "Incomes", url: "/income", icon: BanknoteArrowDown, isActive: false},
+  {title: "Savings", url: "/savings", icon: PiggyBank, isActive: false},
+  {title: "Debts", url: "/home", icon: Handshake, isActive: false},
+  {title: "Receiveables", url: "/home", icon: HandCoins, isActive: false},
 ];

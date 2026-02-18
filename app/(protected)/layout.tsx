@@ -18,7 +18,7 @@ async function ProtectedRootLayout({
   ]);
 
   return (
-    <SidebarProvider>
+    <SidebarProvider open={false} defaultChecked={false}>
       <AppSidebar user={user} profile={profile!} />
       <main className="px-4 py-2 bg-white max-h-screen w-screen">
         <AuthProvider user={user} profile={profile} savings={savings}>

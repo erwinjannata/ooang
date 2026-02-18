@@ -34,18 +34,20 @@ type Props = {
   setRefresh: Dispatch<SetStateAction<number>>;
 };
 
+const defaults = {
+  title: "",
+  amount: 0,
+  category: "",
+  spend_from: "",
+  description: "",
+};
+
 function NewExpenseDialog({ open, setOpen, setRefresh }: Props) {
   const { user, profile, savings } = useAuth();
   const [loading, setLoading] = useState<boolean>(false);
   const form = useForm<ExpensesFormData>({
     resolver: zodResolver(expensesSchema),
-    defaultValues: {
-      title: "",
-      amount: 0,
-      category: "",
-      spend_from: "",
-      description: "",
-    },
+    defaultValues: defaults,
   });
 
   const onSubmit = async (formData: ExpensesFormData) => {
@@ -59,6 +61,7 @@ function NewExpenseDialog({ open, setOpen, setRefresh }: Props) {
       toast.success(result.message);
       setOpen(false);
       setRefresh((r) => r + 1);
+      form.reset(defaults);
     }
   };
 
@@ -67,13 +70,7 @@ function NewExpenseDialog({ open, setOpen, setRefresh }: Props) {
       open={open}
       onOpenChange={(open) => {
         setOpen(open);
-        form.reset({
-          title: "",
-          amount: 0,
-          category: "",
-          spend_from: "",
-          description: "",
-        });
+        form.reset(defaults);
       }}
     >
       <Form {...form}>

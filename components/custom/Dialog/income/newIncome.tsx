@@ -49,6 +49,7 @@ function NewIncomeDialog({ open, setOpen, setRefresh }: Props) {
   const onSubmit = async (formData: IncomeFormData) => {
     setLoading(true);
     const result = await insertIncome({ data: formData, userId: user?.id });
+
     setLoading(false);
     if (!result.success) {
       toast.error(result.message);
@@ -56,6 +57,7 @@ function NewIncomeDialog({ open, setOpen, setRefresh }: Props) {
       toast.success(result.message);
       setOpen(false);
       setRefresh((r) => r + 1);
+      form.reset(defaults);
     }
   };
 

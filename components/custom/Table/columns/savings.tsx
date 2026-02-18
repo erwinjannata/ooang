@@ -58,6 +58,11 @@ export function getSavingsColumns({
       cell: ({ row }) => <div>{toLocDate(row.getValue("created_at"))}</div>,
     },
     {
+      accessorKey: "updated_at",
+      header: () => <div className="font-medium">Last Updated</div>,
+      cell: ({ row }) => <div>{toLocDate(row.getValue("updated_at"))}</div>,
+    },
+    {
       id: "actions",
       enableHiding: false,
       cell: ({ row }) => {
