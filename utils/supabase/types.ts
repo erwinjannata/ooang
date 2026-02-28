@@ -69,6 +69,7 @@ export type Database = {
         Row: {
           amount: number
           created_at: string
+          description: string | null
           id: string
           save_to: string
           title: string
@@ -77,6 +78,7 @@ export type Database = {
         Insert: {
           amount: number
           created_at?: string
+          description?: string | null
           id?: string
           save_to?: string
           title: string
@@ -85,6 +87,7 @@ export type Database = {
         Update: {
           amount?: number
           created_at?: string
+          description?: string | null
           id?: string
           save_to?: string
           title?: string
@@ -100,6 +103,67 @@ export type Database = {
           },
           {
             foreignKeyName: "income_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "user_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      receiveables: {
+        Row: {
+          amount: number
+          created_at: string
+          description: string | null
+          id: string
+          paid_date: string | null
+          save_to: string | null
+          spend_from: string
+          status: string
+          title: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          paid_date?: string | null
+          save_to?: string | null
+          spend_from?: string
+          status?: string
+          title: string
+          user_id?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          paid_date?: string | null
+          save_to?: string | null
+          spend_from?: string
+          status?: string
+          title?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "receiveables_save_to_fkey"
+            columns: ["save_to"]
+            isOneToOne: false
+            referencedRelation: "user_savings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "receiveables_spend_from_fkey"
+            columns: ["spend_from"]
+            isOneToOne: false
+            referencedRelation: "user_savings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "receiveables_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "user_profiles"
@@ -132,7 +196,9 @@ export type Database = {
         Row: {
           balance: number | null
           created_at: string
+          description: string | null
           id: string
+          is_active: boolean
           name: string
           updated_at: string
           user_id: string
@@ -140,7 +206,9 @@ export type Database = {
         Insert: {
           balance?: number | null
           created_at?: string
+          description?: string | null
           id?: string
+          is_active?: boolean
           name: string
           updated_at?: string
           user_id: string
@@ -148,7 +216,9 @@ export type Database = {
         Update: {
           balance?: number | null
           created_at?: string
+          description?: string | null
           id?: string
+          is_active?: boolean
           name?: string
           updated_at?: string
           user_id?: string

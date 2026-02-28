@@ -6,20 +6,20 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { toLocDate } from "@/hooks/toLocDate";
-import { IncomeRow, IncomeUpdate } from "@/types/income";
+import { ReceiveableRow, ReceiveableUpdate } from "@/types/receiveables";
 import { Checkbox } from "@radix-ui/react-checkbox";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, Eraser, MoreHorizontal, PenLine } from "lucide-react";
 
 type Props = {
-  handleEdit: (selected: IncomeUpdate) => void;
-  handleDelete: (selected: IncomeRow) => Promise<void>;
+  handleEdit: (selected: ReceiveableUpdate) => void;
+  handleDelete: (selected: ReceiveableRow) => Promise<void>;
 };
 
-export function getIncomeColumn({
+export function getReceiveablesColumn({
   handleEdit,
   handleDelete,
-}: Props): ColumnDef<IncomeRow>[] {
+}: Props): ColumnDef<ReceiveableRow>[] {
   return [
     {
       id: "select",
@@ -72,13 +72,33 @@ export function getIncomeColumn({
       },
     },
     {
-      id: "savingName",
+      accessorKey: "spend_from",
       header: "Spend From",
       cell: ({ row }) => {
-        const expense = row.original;
+        const receiveable = row.original;
 
-        return <div className="uppercase">{expense.saving?.name}</div>;
+        return (
+          <div className="uppercase">{receiveable.saving_spent?.name}</div>
+        );
       },
+    },
+    {
+      accessorKey: "save_to",
+      header: "Save to",
+      cell: ({ row }) => {
+        const receiveable = row.original;
+
+        return (
+          <div className="uppercase">{receiveable.saving_to?.name || "-"}</div>
+        );
+      },
+    },
+    {
+      accessorKey: "status",
+      header: "Status",
+      cell: ({ row }) => (
+        <div className="uppercase font-medium">{row.getValue("status")}</div>
+      ),
     },
     {
       accessorKey: "created_at",

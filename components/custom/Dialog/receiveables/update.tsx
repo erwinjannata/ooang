@@ -1,4 +1,6 @@
-import { updateExpenses } from "@/app/(protected)/expenses/actions";
+"use client";
+
+import { updateReceivable } from "@/app/(protected)/receiveables/actions";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -18,32 +20,41 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { ExpenseCategory } from "@/lib/constants/expenseCategory";
-import { ExpensesFormData, expensesSchema } from "@/schemas/forms/expenses";
-import { ExpensesUpdate } from "@/types/expenses";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  ReceiveablesFormData,
+  receiveablesSchema,
+} from "@/schemas/forms/receiveables";
+import { ReceiveableUpdate } from "@/types/receiveables";
 import { useAuth } from "@/utils/authProvider";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Plus, X } from "lucide-react";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import CurrencyInput from "../../Input/CurrencyInput";
 import CustomSelect from "../../Select/select";
 
 type Props = {
-  selected: ExpensesUpdate;
+  selected: ReceiveableUpdate;
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
   setRefresh: Dispatch<SetStateAction<number>>;
 };
 
-function EditExpenseDialog({ selected, open, setOpen, setRefresh }: Props) {
+function UpdateReceiveablesDialog({
+  selected,
+  open,
+  setOpen,
+  setRefresh,
+}: Props) {
   const { profile, savings } = useAuth();
   const [loading, setLoading] = useState<boolean>(false);
-  const form = useForm<ExpensesFormData>({
-    resolver: zodResolver(expensesSchema),
+  const form = useForm<ReceiveablesFormData>({
+    resolver: zodResolver(receiveablesSchema),
     defaultValues: {
       title: "",
       amount: 0,
-      category: "",
       spend_from: "",
       description: "",
     },
@@ -51,23 +62,16 @@ function EditExpenseDialog({ selected, open, setOpen, setRefresh }: Props) {
 
   useEffect(() => {
     if (open && selected) {
-      form.reset({
-        title: selected.title || "",
-        amount: selected.amount || 0,
-        category: selected.category || "",
-        spend_from: selected.spend_from || "",
-        description: selected.description || "",
-      });
+      form.reset(selected);
     }
-  }, [selected, form, open]);
+  }, [form, open, selected]);
 
-  const onSubmit = async (formData: ExpensesFormData) => {
+  const onSubmit = async (formData: ReceiveablesFormData) => {
     setLoading(true);
-    const result = await updateExpenses({
-      data: formData,
+    const result = await updateReceivable({
+      formData: formData,
       selected: selected!,
     });
-
     setLoading(false);
     if (!result.success) {
       toast.error(result.message);
@@ -84,10 +88,10 @@ function EditExpenseDialog({ selected, open, setOpen, setRefresh }: Props) {
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Expense Detail</DialogTitle>
-              <DialogDescription>{selected?.title}</DialogDescription>
+              <DialogTitle>New Receievable</DialogTitle>
+              <DialogDescription></DialogDescription>
             </DialogHeader>
-            <div className="overflow-y-auto max-h-[60vh] px-2 py-4 grid gap-6">
+            <div className="grid gap-6 p-4">
               <FormField
                 control={form.control}
                 name="title"
@@ -112,34 +116,7 @@ function EditExpenseDialog({ selected, open, setOpen, setRefresh }: Props) {
                   <FormItem>
                     <FormLabel>Amount</FormLabel>
                     <FormControl>
-                      <Input
-                        {...field}
-                        type="number"
-                        value={field.value || 0}
-                        disabled={loading}
-                        {...form.register("amount", { valueAsNumber: true })}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="category"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Category</FormLabel>
-                    <FormControl>
-                      <CustomSelect
-                        {...field}
-                        label="Category"
-                        groups={[
-                          { label: "Expense Category", items: ExpenseCategory },
-                        ]}
-                        disabled={loading}
-                        onChange={(val) => field.onChange(val)}
-                      />
+                      <CurrencyInput fieldData={field} loading={loading} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -159,7 +136,7 @@ function EditExpenseDialog({ selected, open, setOpen, setRefresh }: Props) {
                           {
                             label: `${profile?.display_name}'s savings`,
                             items: savings!.map((saving) => ({
-                              label: saving.name.toLocaleUpperCase(),
+                              label: saving.name,
                               value: saving.id,
                             })),
                           },
@@ -179,10 +156,12 @@ function EditExpenseDialog({ selected, open, setOpen, setRefresh }: Props) {
                   <FormItem>
                     <FormLabel>Description</FormLabel>
                     <FormControl>
-                      <Input
+                      <Textarea
                         {...field}
+                        placeholder="Saving description here..."
                         value={field.value || ""}
                         disabled={loading}
+                        {...form.register("description")}
                       />
                     </FormControl>
                     <FormMessage />
@@ -192,15 +171,18 @@ function EditExpenseDialog({ selected, open, setOpen, setRefresh }: Props) {
             </div>
             <DialogFooter>
               <DialogClose asChild>
-                <Button variant="outline">Cancel</Button>
+                <Button variant="outline" disabled={loading}>
+                  <X />
+                  Cancel
+                </Button>
               </DialogClose>
               <Button
-                size="sm"
                 type="submit"
                 disabled={loading}
                 onClick={form.handleSubmit(onSubmit)}
               >
-                Submit
+                <Plus />
+                Save
               </Button>
             </DialogFooter>
           </DialogContent>
@@ -210,4 +192,4 @@ function EditExpenseDialog({ selected, open, setOpen, setRefresh }: Props) {
   );
 }
 
-export default EditExpenseDialog;
+export default UpdateReceiveablesDialog;

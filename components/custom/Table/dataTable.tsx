@@ -1,7 +1,11 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group";
 import {
   Pagination,
   PaginationContent,
@@ -24,7 +28,7 @@ import {
   getFilteredRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, Search } from "lucide-react";
 import { Dispatch, SetStateAction, useState } from "react";
 
 interface Props<TData, TValue> {
@@ -58,18 +62,27 @@ function DataTable<TData, TValue>({
 
   return (
     <div className="rounded-md p-4">
-      <div className="items-center">
-        <Input
-          placeholder="Search"
-          value={
-            (table.getColumn(searchColumn)?.getFilterValue() as string) ?? ""
-          }
-          onChange={(event) =>
-            table.getColumn(searchColumn)?.setFilterValue(event?.target.value)
-          }
-          className="mb-2"
-          disabled={loading}
-        />
+      <div className="items-center mb-4">
+        <InputGroup className="w-full">
+          <InputGroupInput
+            placeholder="Search..."
+            value={
+              (table.getColumn(searchColumn)?.getFilterValue() as string) ?? ""
+            }
+            onChange={(event) =>
+              table.getColumn(searchColumn)?.setFilterValue(event?.target.value)
+            }
+            disabled={loading}
+          />
+          <InputGroupAddon>
+            <Search />
+          </InputGroupAddon>
+          <InputGroupAddon align="inline-end">
+            {(table.getColumn(searchColumn)?.getFilterValue() as string)
+              ? `${table.getRowModel().rows?.length} results`
+              : ""}
+          </InputGroupAddon>
+        </InputGroup>
       </div>
       <div className="rounded-md overflow-auto max-h-100">
         <Table>
@@ -83,7 +96,7 @@ function DataTable<TData, TValue>({
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext()
+                            header.getContext(),
                           )}
                     </TableHead>
                   );
@@ -102,7 +115,7 @@ function DataTable<TData, TValue>({
                     <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}

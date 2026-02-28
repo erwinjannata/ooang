@@ -10,16 +10,22 @@ import {
 import { toLocDate } from "@/hooks/toLocDate";
 import { SavingsRow, SavingsUpdate } from "@/types/savings";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import {
+  ArrowUpDown,
+  Captions,
+  CaptionsOff,
+  MoreHorizontal,
+  PenLine,
+} from "lucide-react";
 
 type Props = {
   handleEdit: (selected: SavingsUpdate) => void;
-  handleDelete: (selected: SavingsRow) => Promise<void>;
+  handleDisable: (selected: SavingsRow) => Promise<void>;
 };
 
 export function getSavingsColumns({
   handleEdit,
-  handleDelete,
+  handleDisable,
 }: Props): ColumnDef<SavingsRow>[] {
   return [
     {
@@ -53,9 +59,19 @@ export function getSavingsColumns({
       },
     },
     {
-      accessorKey: "created_at",
-      header: () => <div className="font-medium">Created at</div>,
-      cell: ({ row }) => <div>{toLocDate(row.getValue("created_at"))}</div>,
+      accessorKey: "is_active",
+      header: () => <div className="font-medium">Active</div>,
+      cell: ({ row }) => {
+        const isActive: boolean = row.getValue<boolean>("is_active");
+
+        return (
+          <div
+            className={`font-medium uppercase ${isActive ? "" : "text-red-500"}`}
+          >
+            {isActive ? "active" : "inactive"}
+          </div>
+        );
+      },
     },
     {
       accessorKey: "updated_at",
@@ -81,13 +97,15 @@ export function getSavingsColumns({
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => handleEdit(saving)}>
+                <PenLine />
                 Edit
               </DropdownMenuItem>
               <DropdownMenuItem
-                variant="destructive"
-                onClick={() => handleDelete(saving)}
+                variant={saving.is_active ? "destructive" : "default"}
+                onClick={() => handleDisable(saving)}
               >
-                Remove
+                {saving.is_active ? <CaptionsOff /> : <Captions />}
+                {saving.is_active ? "Disable" : "Enable"}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

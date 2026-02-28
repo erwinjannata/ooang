@@ -1,3 +1,4 @@
+import { insertSaving } from "@/app/(protected)/savings/actions";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -17,44 +18,44 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { SavingsFormData, savingsSchema } from "@/schemas/forms/savings";
-import { SavingsUpdate } from "@/types/savings";
+import { useAuth } from "@/utils/authProvider";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { updateSavings } from "./actions";
+import CurrencyInput from "../../Input/CurrencyInput";
+import { X, Plus } from "lucide-react";
 
 type Props = {
-  selected: SavingsUpdate;
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
   setRefresh: Dispatch<SetStateAction<number>>;
 };
 
-function EditSavingDialog({ selected, open, setOpen, setRefresh }: Props) {
+function InsertSavingDialog({ open, setOpen, setRefresh }: Props) {
+  const { profile } = useAuth();
   const [loading, setLoading] = useState<boolean>(false);
   const form = useForm<SavingsFormData>({
     resolver: zodResolver(savingsSchema),
     defaultValues: {
       name: "",
       balance: 0,
+      description: "",
     },
   });
 
   useEffect(() => {
-    if (open && selected) {
-      form.reset({
-        name: selected.name || "",
-        balance: selected.balance || 0,
-      });
+    if (open) {
+      form.reset();
     }
-  }, [selected, form, open]);
+  }, [form, open]);
 
   const onSubmit = async (formData: SavingsFormData) => {
     setLoading(true);
-    const result = await updateSavings({
-      saving: selected,
+    const result = await insertSaving({
+      user_id: profile!.id,
       formData: formData,
     });
 
@@ -74,8 +75,10 @@ function EditSavingDialog({ selected, open, setOpen, setRefresh }: Props) {
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Expense Detail</DialogTitle>
-              <DialogDescription>{selected?.name}</DialogDescription>
+              <DialogTitle>New Saving</DialogTitle>
+              <DialogDescription>
+                Provide data about your new saving
+              </DialogDescription>
             </DialogHeader>
             <div className="grid gap-6 p-4">
               <FormField
@@ -83,7 +86,7 @@ function EditSavingDialog({ selected, open, setOpen, setRefresh }: Props) {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Title</FormLabel>
+                    <FormLabel>Account Name</FormLabel>
                     <FormControl>
                       <Input
                         disabled={loading}
@@ -100,14 +103,27 @@ function EditSavingDialog({ selected, open, setOpen, setRefresh }: Props) {
                 name="balance"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Amount</FormLabel>
+                    <FormLabel>Current Saving</FormLabel>
                     <FormControl>
-                      <Input
+                      <CurrencyInput fieldData={field} loading={loading} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Description</FormLabel>
+                    <FormControl>
+                      <Textarea
                         {...field}
-                        type="number"
-                        value={field.value}
+                        placeholder="Saving description here..."
+                        value={field.value || ""}
                         disabled={loading}
-                        {...form.register("balance", { valueAsNumber: true })}
+                        {...form.register("description")}
                       />
                     </FormControl>
                     <FormMessage />
@@ -117,7 +133,10 @@ function EditSavingDialog({ selected, open, setOpen, setRefresh }: Props) {
             </div>
             <DialogFooter>
               <DialogClose asChild>
-                <Button variant="outline">Cancel</Button>
+                <Button variant="outline" size="sm" disabled={loading}>
+                  <X />
+                  Cancel
+                </Button>
               </DialogClose>
               <Button
                 size="sm"
@@ -125,6 +144,7 @@ function EditSavingDialog({ selected, open, setOpen, setRefresh }: Props) {
                 disabled={loading}
                 onClick={form.handleSubmit(onSubmit)}
               >
+                <Plus />
                 Save
               </Button>
             </DialogFooter>
@@ -135,4 +155,4 @@ function EditSavingDialog({ selected, open, setOpen, setRefresh }: Props) {
   );
 }
 
-export default EditSavingDialog;
+export default InsertSavingDialog;

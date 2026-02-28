@@ -1,4 +1,4 @@
-import { insertIncome } from "@/app/(protected)/income/actions";
+import { updateSavings } from "@/app/(protected)/savings/actions";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -18,37 +18,49 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { IncomeFormData, incomeSchema } from "@/schemas/forms/income";
-import { useAuth } from "@/utils/authProvider";
+import { Textarea } from "@/components/ui/textarea";
+import { SavingsFormData, savingsSchema } from "@/schemas/forms/savings";
+import { SavingsUpdate } from "@/types/savings";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Save, X } from "lucide-react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import CustomSelect from "../../Select/select";
+import CurrencyInput from "../../Input/CurrencyInput";
 
 type Props = {
+  selected: SavingsUpdate;
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
   setRefresh: Dispatch<SetStateAction<number>>;
 };
 
-const defaults = {
-  title: "",
-  amount: 0,
-  save_to: "",
-};
-
-function NewIncomeDialog({ open, setOpen, setRefresh }: Props) {
-  const { user, profile, savings } = useAuth();
+function UpdateSavingDialog({ selected, open, setOpen, setRefresh }: Props) {
   const [loading, setLoading] = useState<boolean>(false);
-  const form = useForm<IncomeFormData>({
-    resolver: zodResolver(incomeSchema),
-    defaultValues: defaults,
+  const form = useForm<SavingsFormData>({
+    resolver: zodResolver(savingsSchema),
+    defaultValues: {
+      name: "",
+      balance: 0,
+      description: "",
+    },
   });
 
-  const onSubmit = async (formData: IncomeFormData) => {
+  useEffect(() => {
+    if (open && selected) {
+      form.reset({
+        ...selected,
+        balance: selected.balance || 0,
+      });
+    }
+  }, [selected, form, open]);
+
+  const onSubmit = async (formData: SavingsFormData) => {
     setLoading(true);
-    const result = await insertIncome({ data: formData, userId: user?.id });
+    const result = await updateSavings({
+      saving: selected,
+      formData: formData,
+    });
 
     setLoading(false);
     if (!result.success) {
@@ -57,37 +69,30 @@ function NewIncomeDialog({ open, setOpen, setRefresh }: Props) {
       toast.success(result.message);
       setOpen(false);
       setRefresh((r) => r + 1);
-      form.reset(defaults);
     }
   };
 
   return (
-    <Dialog
-      open={open}
-      onOpenChange={(open) => {
-        setOpen(open);
-        form.reset(defaults);
-      }}
-    >
+    <Dialog open={open} onOpenChange={setOpen}>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Income Detail</DialogTitle>
-              <DialogDescription></DialogDescription>
+              <DialogTitle>Saving Detail</DialogTitle>
+              <DialogDescription>{selected?.name}</DialogDescription>
             </DialogHeader>
-            <div className="overflow-y-auto max-h-[60vh] px-2 py-4 grid gap-6">
+            <div className="grid gap-6 p-4">
               <FormField
                 control={form.control}
-                name="title"
+                name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Title</FormLabel>
+                    <FormLabel>Account Name</FormLabel>
                     <FormControl>
                       <Input
                         disabled={loading}
                         {...field}
-                        {...form.register("title")}
+                        {...form.register("name")}
                       />
                     </FormControl>
                     <FormMessage />
@@ -96,19 +101,12 @@ function NewIncomeDialog({ open, setOpen, setRefresh }: Props) {
               />
               <FormField
                 control={form.control}
-                name="amount"
+                name="balance"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Amount</FormLabel>
+                    <FormLabel>Current Saving</FormLabel>
                     <FormControl>
-                      <Input
-                        {...field}
-                        type="number"
-                        value={field.value}
-                        disabled={loading}
-                        aria-invalid={!!form.formState.errors.amount}
-                        {...form.register("amount", { valueAsNumber: true })}
-                      />
+                      <CurrencyInput fieldData={field} loading={loading} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -116,25 +114,17 @@ function NewIncomeDialog({ open, setOpen, setRefresh }: Props) {
               />
               <FormField
                 control={form.control}
-                name="save_to"
+                name="description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Saving</FormLabel>
+                    <FormLabel>Description</FormLabel>
                     <FormControl>
-                      <CustomSelect
+                      <Textarea
                         {...field}
-                        label="Saving"
-                        groups={[
-                          {
-                            label: `${profile?.display_name}'s savings`,
-                            items: savings!.map((saving) => ({
-                              label: saving.name,
-                              value: saving.id,
-                            })),
-                          },
-                        ]}
+                        placeholder="Saving description here..."
+                        value={field.value || ""}
                         disabled={loading}
-                        onChange={(val) => field.onChange(val)}
+                        {...form.register("description")}
                       />
                     </FormControl>
                     <FormMessage />
@@ -144,7 +134,10 @@ function NewIncomeDialog({ open, setOpen, setRefresh }: Props) {
             </div>
             <DialogFooter>
               <DialogClose asChild>
-                <Button variant="outline">Cancel</Button>
+                <Button variant="outline" size="sm" disabled={loading}>
+                  <X />
+                  Cancel
+                </Button>
               </DialogClose>
               <Button
                 size="sm"
@@ -152,7 +145,8 @@ function NewIncomeDialog({ open, setOpen, setRefresh }: Props) {
                 disabled={loading}
                 onClick={form.handleSubmit(onSubmit)}
               >
-                Submit
+                <Save />
+                Save
               </Button>
             </DialogFooter>
           </DialogContent>
@@ -162,4 +156,4 @@ function NewIncomeDialog({ open, setOpen, setRefresh }: Props) {
   );
 }
 
-export default NewIncomeDialog;
+export default UpdateSavingDialog;

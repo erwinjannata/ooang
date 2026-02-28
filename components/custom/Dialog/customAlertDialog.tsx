@@ -8,6 +8,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import { BadgeAlert, Check, X } from "lucide-react";
 import { Dispatch, SetStateAction } from "react";
 
 type Props = {
@@ -23,12 +25,25 @@ function CustomAlertDialog({ open, onOpen, title, children, onAction }: Props) {
     <AlertDialog open={open} onOpenChange={onOpen}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>{title}</AlertDialogTitle>
+          <AlertDialogTitle className="flex flex-row gap-2 items-center">
+            <BadgeAlert />
+            {title}
+          </AlertDialogTitle>
           <AlertDialogDescription>{children}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={onAction}>Proceed</AlertDialogAction>
+          <AlertDialogCancel asChild>
+            <Button size="sm" variant="outline">
+              <X />
+              Cancel
+            </Button>
+          </AlertDialogCancel>
+          <AlertDialogAction asChild>
+            <Button size="sm" variant="default" onClick={onAction}>
+              <Check />
+              Proceed
+            </Button>
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

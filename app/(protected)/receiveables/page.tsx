@@ -2,43 +2,50 @@
 
 import FloatingButton from "@/components/custom/Button/FloatingButton";
 import CustomAlertDialog from "@/components/custom/Dialog/customAlertDialog";
-import InsertIncomeDialog from "@/components/custom/Dialog/income/insert";
-import UpdateIncomeDialog from "@/components/custom/Dialog/income/update";
-import { getIncomeColumn } from "@/components/custom/Table/columns/income";
+import InsertReceiveablesDialog from "@/components/custom/Dialog/receiveables/insert";
+import UpdateReceiveablesDialog from "@/components/custom/Dialog/receiveables/update";
+import { getReceiveablesColumn } from "@/components/custom/Table/columns/receiveables";
 import DataTable from "@/components/custom/Table/dataTable";
 import { Spinner } from "@/components/ui/spinner";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { IncomeRow, IncomeUpdate } from "@/types/income";
 import { PaginationType } from "@/types/paginations";
+import { ReceiveableRow, ReceiveableUpdate } from "@/types/receiveables";
+import { useAuth } from "@/utils/authProvider";
 import { Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { deleteIncome, fetchIncome } from "./actions";
+import { deleteReceiveable, fetchReceiveables } from "./actions";
 
-function IncomePage() {
-  const [income, setIncome] = useState<IncomeRow[]>([]);
-  const [showNewDialog, setShowNewDialog] = useState<boolean>(false);
-  const [showEditDialog, setShowEditDialog] = useState<boolean>(false);
+function ReceiveablesPage() {
+  const { profile } = useAuth();
+  const [receiveables, setReceiveables] = useState<ReceiveableRow[]>([]);
+  const [showInsertDialog, setShowInsertDialog] = useState<boolean>(false);
+  const [showUpdateDialog, setShowUpdateDialog] = useState<boolean>(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [pagination, setPagination] = useState<PaginationType>({
     pageIndex: 0,
-    pageSize: 20,
+    pageSize: 10,
     hasNextPage: false,
     hasPrevPage: false,
   });
   const [refresh, setRefresh] = useState<number>(0);
-  const [selected, setSelected] = useState<IncomeUpdate | null>(null);
+  const [selected, setSelected] = useState<ReceiveableUpdate | null>(null);
 
   useEffect(() => {
     (async () => {
       setLoading(true);
-      const results = await fetchIncome({ pagination: pagination });
+      const results = await fetchReceiveables({
+        pagination: pagination,
+        user_id: profile!.id,
+      });
+
       if (!results.success) {
         toast.error(results.message);
       }
+
       setLoading(false);
-      setIncome(results.data || []);
+      setReceiveables(results.data || []);
       setPagination((prev) => ({
         ...prev,
         hasNextPage: results.hasNextPage!,
@@ -48,19 +55,19 @@ function IncomePage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pagination.pageIndex, refresh]);
 
-  const handleEdit = (selected: IncomeUpdate) => {
+  const handleEdit = (selected: ReceiveableUpdate) => {
     setSelected(selected);
-    setShowEditDialog(true);
+    setShowUpdateDialog(true);
   };
 
-  const handleDelete = async (selected: IncomeRow) => {
+  const handleDelete = async (selected: ReceiveableRow) => {
     await setSelected(selected);
     setShowDeleteDialog(true);
   };
 
   const onDelete = async () => {
     setLoading(true);
-    const results = await deleteIncome({ selected: selected! });
+    const results = await deleteReceiveable({ selected: selected! });
     setLoading(false);
     if (!results.success) {
       toast.error(results.message);
@@ -71,9 +78,9 @@ function IncomePage() {
     }
   };
 
-  const incomeColumns = getIncomeColumn({
-    handleEdit,
-    handleDelete,
+  const receiveableColumns = getReceiveablesColumn({
+    handleEdit: handleEdit,
+    handleDelete: handleDelete,
   });
 
   return (
@@ -83,8 +90,8 @@ function IncomePage() {
       ) : (
         <div className="bg-white shadow-md rounded-md p-4">
           <DataTable
-            columns={incomeColumns}
-            data={income}
+            columns={receiveableColumns}
+            data={receiveables}
             searchColumn="title"
             pagination={pagination}
             setPagination={setPagination}
@@ -95,32 +102,32 @@ function IncomePage() {
 
       <FloatingButton
         size={useIsMobile() ? "icon-lg" : "lg"}
-        onClick={() => setShowNewDialog(true)}
+        onClick={() => setShowInsertDialog(true)}
       >
-        <Plus className="w-10 h-10" /> {!useIsMobile() && "Record Income"}
+        <Plus className="w-10 h-10" /> {!useIsMobile() && "New Receiveable"}
       </FloatingButton>
-      <InsertIncomeDialog
-        open={showNewDialog}
-        setOpen={setShowNewDialog}
+      <InsertReceiveablesDialog
+        open={showInsertDialog}
+        setOpen={setShowInsertDialog}
         setRefresh={setRefresh}
       />
-      <UpdateIncomeDialog
-        open={showEditDialog}
-        setOpen={setShowEditDialog}
+      <UpdateReceiveablesDialog
+        open={showUpdateDialog}
+        setOpen={setShowUpdateDialog}
         selected={selected!}
         setRefresh={setRefresh}
       />
       <CustomAlertDialog
         open={showDeleteDialog}
         onOpen={setShowDeleteDialog}
-        title="Remove income"
+        title="Remove receiveable"
         onAction={() => onDelete()}
       >
         Proceed to remove <span className="font-medium">{selected?.title}</span>{" "}
-        income record? This action cannot be undone
+        receiveable record? This action cannot be undone
       </CustomAlertDialog>
     </div>
   );
 }
 
-export default IncomePage;
+export default ReceiveablesPage;

@@ -2,8 +2,8 @@
 
 import FloatingButton from "@/components/custom/Button/FloatingButton";
 import CustomAlertDialog from "@/components/custom/Dialog/customAlertDialog";
-import EditExpenseDialog from "@/components/custom/Dialog/expenses/editExpense";
-import NewExpenseDialog from "@/components/custom/Dialog/expenses/newExpense";
+import InsertExpenseDialog from "@/components/custom/Dialog/expenses/insert";
+import UpdateExpenseDialog from "@/components/custom/Dialog/expenses/update";
 import { getExpensesColumn } from "@/components/custom/Table/columns/expenses";
 import DataTable from "@/components/custom/Table/dataTable";
 import { Spinner } from "@/components/ui/spinner";
@@ -104,12 +104,12 @@ function ExpensesPage() {
       >
         <Plus className="w-10 h-10" /> {!useIsMobile() && "Record Expense"}
       </FloatingButton>
-      <NewExpenseDialog
+      <InsertExpenseDialog
         open={showNewDialog}
         setOpen={setShowNewDialog}
         setRefresh={setRefresh}
       />
-      <EditExpenseDialog
+      <UpdateExpenseDialog
         selected={selected!}
         open={showEditDialog}
         setOpen={setShowEditDialog}

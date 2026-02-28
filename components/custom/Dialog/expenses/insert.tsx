@@ -1,4 +1,4 @@
-import { updateIncome } from "@/app/(protected)/income/actions";
+import { insertExpenses } from "@/app/(protected)/expenses/actions";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -18,50 +18,44 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { IncomeFormData, incomeSchema } from "@/schemas/forms/income";
-import { IncomeUpdate } from "@/types/income";
+import { Textarea } from "@/components/ui/textarea";
+import { ExpenseCategory } from "@/lib/constants/expenseCategory";
+import { ExpensesFormData, expensesSchema } from "@/schemas/forms/expenses";
 import { useAuth } from "@/utils/authProvider";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Plus, X } from "lucide-react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import CurrencyInput from "../../Input/CurrencyInput";
 import CustomSelect from "../../Select/select";
 
 type Props = {
-  selected: IncomeUpdate;
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
   setRefresh: Dispatch<SetStateAction<number>>;
 };
 
-function EditIncomeDialog({ selected, open, setOpen, setRefresh }: Props) {
-  const { profile, savings } = useAuth();
+const defaults = {
+  title: "",
+  amount: 0,
+  category: "",
+  spend_from: "",
+  description: "",
+};
+
+function InsertExpenseDialog({ open, setOpen, setRefresh }: Props) {
+  const { user, profile, savings } = useAuth();
   const [loading, setLoading] = useState<boolean>(false);
-  const form = useForm<IncomeFormData>({
-    resolver: zodResolver(incomeSchema),
-    defaultValues: {
-      title: "",
-      amount: 0,
-      save_to: "",
-    },
+  const form = useForm<ExpensesFormData>({
+    resolver: zodResolver(expensesSchema),
+    defaultValues: defaults,
   });
 
-  useEffect(() => {
-    if (open && selected) {
-      form.reset({
-        title: selected.title || "",
-        amount: selected.amount || 0,
-        save_to: selected.save_to || "",
-      });
-    }
-  }, [selected, form, open]);
-
-  const onSubmit = async (formData: IncomeFormData) => {
+  const onSubmit = async (formData: ExpensesFormData) => {
     setLoading(true);
-    const result = await updateIncome({
-      data: formData,
-      selected: selected!,
-    });
+    const result = await insertExpenses({ data: formData, userId: user?.id });
+
     setLoading(false);
     if (!result.success) {
       toast.error(result.message);
@@ -69,17 +63,24 @@ function EditIncomeDialog({ selected, open, setOpen, setRefresh }: Props) {
       toast.success(result.message);
       setOpen(false);
       setRefresh((r) => r + 1);
+      form.reset(defaults);
     }
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog
+      open={open}
+      onOpenChange={(open) => {
+        setOpen(open);
+        form.reset(defaults);
+      }}
+    >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Expense Detail</DialogTitle>
-              <DialogDescription>{selected?.title}</DialogDescription>
+              <DialogDescription></DialogDescription>
             </DialogHeader>
             <div className="overflow-y-auto max-h-[60vh] px-2 py-4 grid gap-6">
               <FormField
@@ -90,8 +91,8 @@ function EditIncomeDialog({ selected, open, setOpen, setRefresh }: Props) {
                     <FormLabel>Title</FormLabel>
                     <FormControl>
                       <Input
-                        disabled={loading}
                         {...field}
+                        disabled={loading}
                         {...form.register("title")}
                       />
                     </FormControl>
@@ -106,12 +107,27 @@ function EditIncomeDialog({ selected, open, setOpen, setRefresh }: Props) {
                   <FormItem>
                     <FormLabel>Amount</FormLabel>
                     <FormControl>
-                      <Input
+                      <CurrencyInput fieldData={field} loading={loading} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="category"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Category</FormLabel>
+                    <FormControl>
+                      <CustomSelect
                         {...field}
-                        type="number"
-                        value={field.value || 0}
+                        label="Category"
+                        groups={[
+                          { label: "Expense Category", items: ExpenseCategory },
+                        ]}
                         disabled={loading}
-                        {...form.register("amount", { valueAsNumber: true })}
+                        onChange={(val) => field.onChange(val)}
                       />
                     </FormControl>
                     <FormMessage />
@@ -120,7 +136,7 @@ function EditIncomeDialog({ selected, open, setOpen, setRefresh }: Props) {
               />
               <FormField
                 control={form.control}
-                name="save_to"
+                name="spend_from"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Saving</FormLabel>
@@ -145,17 +161,39 @@ function EditIncomeDialog({ selected, open, setOpen, setRefresh }: Props) {
                   </FormItem>
                 )}
               />
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Description</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        {...field}
+                        placeholder="Expense description here..."
+                        value={field.value || ""}
+                        disabled={loading}
+                        {...form.register("description")}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
             <DialogFooter>
               <DialogClose asChild>
-                <Button variant="outline">Cancel</Button>
+                <Button variant="outline" disabled={loading}>
+                  <X />
+                  Cancel
+                </Button>
               </DialogClose>
               <Button
-                size="sm"
                 type="submit"
                 disabled={loading}
                 onClick={form.handleSubmit(onSubmit)}
               >
+                <Plus />
                 Submit
               </Button>
             </DialogFooter>
@@ -166,4 +204,4 @@ function EditIncomeDialog({ selected, open, setOpen, setRefresh }: Props) {
   );
 }
 
-export default EditIncomeDialog;
+export default InsertExpenseDialog;

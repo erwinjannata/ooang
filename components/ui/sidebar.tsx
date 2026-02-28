@@ -23,7 +23,16 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { NavLinks } from "@/lib/constants/navItems";
 import { cn } from "@/lib/utils";
+import { usePathname } from "next/navigation";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "./breadcrumb";
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
@@ -260,25 +269,48 @@ function SidebarTrigger({
 }: React.ComponentProps<typeof Button>) {
   const { toggleSidebar } = useSidebar();
   const isMobile = useIsMobile();
+  const pathname = usePathname();
+  const currentRoute = NavLinks.find((link) => link.url === pathname);
 
-  if (!isMobile) return null;
+  if (!isMobile && currentRoute)
+    return (
+      <Breadcrumb className="px-10 py-8">
+        <BreadcrumbList>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem className="select-none">
+            <BreadcrumbPage>{currentRoute?.title}</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+    );
 
   return (
-    <Button
-      data-sidebar="trigger"
-      data-slot="sidebar-trigger"
-      variant="ghost"
-      size="icon"
-      className={cn("size-7", className)}
-      onClick={(event) => {
-        onClick?.(event);
-        toggleSidebar();
-      }}
-      {...props}
-    >
-      <Menu />
-      <span className="sr-only">Toggle Sidebar</span>
-    </Button>
+    <div className="flex flex-row gap-4 items-center">
+      <Button
+        data-sidebar="trigger"
+        data-slot="sidebar-trigger"
+        variant="ghost"
+        size="icon"
+        className={cn("size-7", className)}
+        onClick={(event) => {
+          onClick?.(event);
+          toggleSidebar();
+        }}
+        {...props}
+      >
+        <Menu />
+        <span className="sr-only">Toggle Sidebar</span>
+      </Button>
+      {currentRoute ? (
+        <Breadcrumb className="py-8">
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbPage>{currentRoute?.title}</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+      ) : null}
+    </div>
   );
 }
 

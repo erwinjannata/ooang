@@ -24,7 +24,7 @@ async function ProtectedRootLayout({
         <AuthProvider user={user} profile={profile} savings={savings}>
           <SidebarTrigger />
           <UserInitialization />
-          <div className="mt-2">{children}</div>
+          <div className="lg:px-10">{children}</div>
           <Toaster />
         </AuthProvider>
       </main>

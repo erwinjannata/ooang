@@ -59,7 +59,8 @@ export async function getSavings() {
     } = await supabase
         .from("user_savings")
         .select("*")
-        .eq("user_id", user.id);
+        .eq("user_id", user.id)
+        .eq("is_active", true);
 
     if (error) {
         return;

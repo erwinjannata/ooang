@@ -9,7 +9,7 @@ import { toLocDate } from "@/hooks/toLocDate";
 import { ExpensesRow, ExpensesUpdate } from "@/types/expenses";
 import { Checkbox } from "@radix-ui/react-checkbox";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown, Eraser, MoreHorizontal, PenLine } from "lucide-react";
 
 type Props = {
   handleEdit: (selected: ExpensesUpdate) => void;
@@ -89,7 +89,7 @@ export function getExpensesColumn({
     },
     {
       accessorKey: "created_at",
-      header: () => <div className="font-medium">Created at</div>,
+      header: () => <div className="font-medium">Date</div>,
       cell: ({ row }) => <div>{toLocDate(row.getValue("created_at"))}</div>,
     },
     {
@@ -107,12 +107,14 @@ export function getExpensesColumn({
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={() => handleEdit(expense)}>
+                <PenLine />
                 Edit
               </DropdownMenuItem>
               <DropdownMenuItem
                 variant="destructive"
                 onClick={() => handleDelete(expense)}
               >
+                <Eraser />
                 Remove
               </DropdownMenuItem>
             </DropdownMenuContent>

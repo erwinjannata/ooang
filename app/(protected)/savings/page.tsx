@@ -1,7 +1,9 @@
 "use client";
 
 import FloatingButton from "@/components/custom/Button/FloatingButton";
-import EditSavingDialog from "@/components/custom/Dialog/savings/editSaving";
+import CustomAlertDialog from "@/components/custom/Dialog/customAlertDialog";
+import InsertSavingDialog from "@/components/custom/Dialog/savings/insert";
+import UpdateSavingDialog from "@/components/custom/Dialog/savings/update";
 import { getSavingsColumns } from "@/components/custom/Table/columns/savings";
 import DataTable from "@/components/custom/Table/dataTable";
 import { Spinner } from "@/components/ui/spinner";
@@ -12,14 +14,14 @@ import { useAuth } from "@/utils/authProvider";
 import { Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { fetchSavings } from "./actions";
+import { disableSaving, fetchSavings } from "./actions";
 
 function SavingPage() {
   const { profile } = useAuth();
   const [savings, setSavings] = useState<SavingsRow[]>([]);
   const [showNewDialog, setShowNewDialog] = useState<boolean>(false);
   const [showEditDialog, setShowEditDialog] = useState<boolean>(false);
-  const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
+  const [showDisableDialog, setShowDisableDialog] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [pagination, setPagination] = useState<PaginationType>({
     pageIndex: 0,
@@ -58,14 +60,28 @@ function SavingPage() {
     setShowEditDialog(true);
   };
 
-  const handleDelete = async (selected: SavingsRow) => {
+  const handleDisable = async (selected: SavingsRow) => {
     await setSelected(selected);
-    setShowDeleteDialog(true);
+    setShowDisableDialog(true);
+  };
+
+  const onDisable = async () => {
+    setLoading(true);
+    const results = await disableSaving({ selected: selected! });
+
+    setLoading(false);
+    if (!results.success) {
+      toast.error(results.message);
+    } else {
+      toast.success(results.message);
+      setShowDisableDialog(false);
+      setRefresh((r) => r + 1);
+    }
   };
 
   const savingsColumns = getSavingsColumns({
     handleEdit: handleEdit,
-    handleDelete: handleDelete,
+    handleDisable: handleDisable,
   });
 
   return (
@@ -90,12 +106,28 @@ function SavingPage() {
       >
         <Plus className="w-10 h-10" /> {!useIsMobile() && "Register Saving"}
       </FloatingButton>
-      <EditSavingDialog
+      <InsertSavingDialog
+        open={showNewDialog}
+        setOpen={setShowNewDialog}
+        setRefresh={setRefresh}
+      />
+      <UpdateSavingDialog
         selected={selected!}
         open={showEditDialog}
         setOpen={setShowEditDialog}
         setRefresh={setRefresh}
       />
+      <CustomAlertDialog
+        open={showDisableDialog}
+        onOpen={setShowDisableDialog}
+        title="Disable saving"
+        onAction={() => onDisable()}
+      >
+        Proceed to {selected?.is_active ? "disable" : "enable"}{" "}
+        <span className="font-medium">{selected?.name}</span> saving account?
+        You can {selected?.is_active ? "enable" : "disable"} this saving again
+        later
+      </CustomAlertDialog>
     </div>
   );
 }
