@@ -38,6 +38,7 @@ export async function insertReceivable({user_id, formData} : {user_id: string, f
     const {error} = await supabase.from("receiveables").insert({
         ...formData,
         user_id: user_id,
+        remaining_amount: formData.amount
     }).select();
 
     if (error) return {success: false, message: "Failed to insert new receiveable data"}
@@ -68,3 +69,9 @@ export async function deleteReceiveable({selected} : {selected: ReceiveableUpdat
 
     return {success: true, message: "Receiveable deleted successfully"}
 }
+
+// export async function settleReceiveable({selected, amount} : {selected: ReceiveableUpdate, amount: number}) : Promise<ReturnType> {
+//     if (!selected) return {success: false, message: "No receiveable selected"};
+
+//     const supabase = await createClient();
+// }

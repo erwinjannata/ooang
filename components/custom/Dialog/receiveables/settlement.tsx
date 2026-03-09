@@ -1,6 +1,5 @@
 "use client";
 
-import { updateReceivable } from "@/app/(protected)/receiveables/actions";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -19,67 +18,60 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  ReceiveablesFormData,
-  receiveablesSchema,
-} from "@/schemas/forms/receiveables";
-import { ReceiveableUpdate } from "@/types/receiveables";
 import { useAuth } from "@/utils/authProvider";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Save, X } from "lucide-react";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
+import z from "zod";
 import CurrencyInput from "../../Input/CurrencyInput";
 import CustomSelect from "../../Select/select";
 
 type Props = {
-  selected: ReceiveableUpdate;
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
   setRefresh: Dispatch<SetStateAction<number>>;
 };
 
-function UpdateReceiveablesDialog({
-  selected,
-  open,
-  setOpen,
-  setRefresh,
-}: Props) {
+const amountSchema = z.object({
+  amount: z
+    .number()
+    .min(1, { message: "Amount invalid" })
+    .positive({ message: "Amount invalid" }),
+  save_to: z.string().min(1, { message: "Saving is not selected" }),
+});
+
+function SettleReceiveablesDialog({ open, setOpen, setRefresh }: Props) {
   const { profile, savings } = useAuth();
   const [loading, setLoading] = useState<boolean>(false);
-  const form = useForm<ReceiveablesFormData>({
-    resolver: zodResolver(receiveablesSchema),
+  const form = useForm<z.infer<typeof amountSchema>>({
+    resolver: zodResolver(amountSchema),
     defaultValues: {
-      title: "",
       amount: 0,
-      spend_from: "",
-      description: "",
+      save_to: "",
     },
   });
 
   useEffect(() => {
-    if (open && selected) {
-      form.reset(selected);
+    if (open) {
+      form.reset();
     }
-  }, [form, open, selected]);
+  }, [form, open]);
 
-  const onSubmit = async (formData: ReceiveablesFormData) => {
+  const onSubmit = async () => {
     setLoading(true);
-    const result = await updateReceivable({
-      formData: formData,
-      selected: selected!,
-    });
-    setLoading(false);
-    if (!result.success) {
-      toast.error(result.message);
-    } else {
-      toast.success(result.message);
-      setOpen(false);
-      setRefresh((r) => r + 1);
-    }
+    // const result = await insertReceivable({
+    //   user_id: profile!.id,
+    //   formData: formData,
+    // });
+    // setLoading(false);
+    // if (!result.success) {
+    //   toast.error(result.message);
+    // } else {
+    //   toast.success(result.message);
+    //   setOpen(false);
+    //   setRefresh((r) => r + 1);
+    // }
   };
 
   return (
@@ -88,27 +80,10 @@ function UpdateReceiveablesDialog({
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>New Receievable</DialogTitle>
+              <DialogTitle>Settle Receiveable</DialogTitle>
               <DialogDescription></DialogDescription>
             </DialogHeader>
             <div className="grid gap-6 p-4">
-              <FormField
-                control={form.control}
-                name="title"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Title</FormLabel>
-                    <FormControl>
-                      <Input
-                        disabled={loading}
-                        {...field}
-                        {...form.register("title")}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
               <FormField
                 control={form.control}
                 name="amount"
@@ -124,7 +99,7 @@ function UpdateReceiveablesDialog({
               />
               <FormField
                 control={form.control}
-                name="spend_from"
+                name="save_to"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Saving</FormLabel>
@@ -143,25 +118,6 @@ function UpdateReceiveablesDialog({
                         ]}
                         disabled={loading}
                         onChange={(val) => field.onChange(val)}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Description</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        {...field}
-                        placeholder="Saving description here..."
-                        value={field.value || ""}
-                        disabled={loading}
-                        {...form.register("description")}
                       />
                     </FormControl>
                     <FormMessage />
@@ -192,4 +148,4 @@ function UpdateReceiveablesDialog({
   );
 }
 
-export default UpdateReceiveablesDialog;
+export default SettleReceiveablesDialog;

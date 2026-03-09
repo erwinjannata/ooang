@@ -3,6 +3,7 @@
 import FloatingButton from "@/components/custom/Button/FloatingButton";
 import CustomAlertDialog from "@/components/custom/Dialog/customAlertDialog";
 import InsertReceiveablesDialog from "@/components/custom/Dialog/receiveables/insert";
+import SettleReceiveablesDialog from "@/components/custom/Dialog/receiveables/settlement";
 import UpdateReceiveablesDialog from "@/components/custom/Dialog/receiveables/update";
 import { getReceiveablesColumn } from "@/components/custom/Table/columns/receiveables";
 import DataTable from "@/components/custom/Table/dataTable";
@@ -19,6 +20,7 @@ import { deleteReceiveable, fetchReceiveables } from "./actions";
 function ReceiveablesPage() {
   const { profile } = useAuth();
   const [receiveables, setReceiveables] = useState<ReceiveableRow[]>([]);
+  const [showSettleDialog, setShowSettleDialog] = useState<boolean>(false);
   const [showInsertDialog, setShowInsertDialog] = useState<boolean>(false);
   const [showUpdateDialog, setShowUpdateDialog] = useState<boolean>(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
@@ -55,6 +57,11 @@ function ReceiveablesPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pagination.pageIndex, refresh]);
 
+  const handleSettlement = (selected: ReceiveableUpdate) => {
+    setSelected(selected);
+    setShowSettleDialog(true);
+  };
+
   const handleEdit = (selected: ReceiveableUpdate) => {
     setSelected(selected);
     setShowUpdateDialog(true);
@@ -79,6 +86,7 @@ function ReceiveablesPage() {
   };
 
   const receiveableColumns = getReceiveablesColumn({
+    handleSettlement: handleSettlement,
     handleEdit: handleEdit,
     handleDelete: handleDelete,
   });
@@ -109,6 +117,11 @@ function ReceiveablesPage() {
       <InsertReceiveablesDialog
         open={showInsertDialog}
         setOpen={setShowInsertDialog}
+        setRefresh={setRefresh}
+      />
+      <SettleReceiveablesDialog
+        open={showSettleDialog}
+        setOpen={setShowSettleDialog}
         setRefresh={setRefresh}
       />
       <UpdateReceiveablesDialog

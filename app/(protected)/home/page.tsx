@@ -8,7 +8,8 @@ import { toast } from "sonner";
 import { getTodayExpenses } from "./actions";
 
 function HomePage() {
-  const [expenses, setExpenses] = useState<ExpensesRow[]>([]);
+  const [, setExpenses] = useState<ExpensesRow[]>([]);
+  const [formatted, setFormatted] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
@@ -18,6 +19,17 @@ function HomePage() {
 
       if (!results.success) toast.error(results.message);
       setExpenses(results.data || []);
+
+      const total =
+        results.data?.reduce((total, expense) => total + expense.amount, 0) ||
+        0;
+
+      setFormatted(
+        new Intl.NumberFormat("id-ID", {
+          style: "currency",
+          currency: "IDR",
+        }).format(total),
+      );
       setLoading(false);
     })();
   }, []);
@@ -31,12 +43,7 @@ function HomePage() {
         <CardContent className="grid gap-2">
           <p className="text-muted-foreground text-sm">Today&apos;s Expenses</p>
           <h1 className="scroll-m-20 text-4xl font-bold tracking-tight text-balance">
-            {new Intl.NumberFormat("id-ID", {
-              style: "currency",
-              currency: "IDR",
-            }).format(
-              expenses.reduce((total, expense) => total + expense.amount, 0),
-            )}
+            <p>{formatted}</p>
           </h1>
         </CardContent>
       </Card>

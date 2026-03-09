@@ -7,7 +7,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { toLocDate } from "@/hooks/toLocDate";
 import { SavingsRow, SavingsUpdate } from "@/types/savings";
 import { ColumnDef } from "@tanstack/react-table";
 import {
@@ -72,11 +71,6 @@ export function getSavingsColumns({
           </div>
         );
       },
-    },
-    {
-      accessorKey: "updated_at",
-      header: () => <div className="font-medium">Last Updated</div>,
-      cell: ({ row }) => <div>{toLocDate(row.getValue("updated_at"))}</div>,
     },
     {
       id: "actions",

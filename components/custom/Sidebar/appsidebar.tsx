@@ -86,7 +86,6 @@ export function AppSidebar({
                       children: item.title,
                       hidden: isOnMobile,
                     }}
-                    // isActive={activeItem?.title === item.title}
                     className="px-2.5 md:px-2"
                     asChild
                   >

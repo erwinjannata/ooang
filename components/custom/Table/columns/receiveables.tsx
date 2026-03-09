@@ -3,20 +3,29 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { toLocDate } from "@/hooks/toLocDate";
 import { ReceiveableRow, ReceiveableUpdate } from "@/types/receiveables";
 import { Checkbox } from "@radix-ui/react-checkbox";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, Eraser, MoreHorizontal, PenLine } from "lucide-react";
+import {
+  ArrowUpDown,
+  Eraser,
+  MoreHorizontal,
+  PenLine,
+  SquareCheckBig,
+} from "lucide-react";
 
 type Props = {
+  handleSettlement: (selected: ReceiveableUpdate) => void;
   handleEdit: (selected: ReceiveableUpdate) => void;
   handleDelete: (selected: ReceiveableRow) => Promise<void>;
 };
 
 export function getReceiveablesColumn({
+  handleSettlement,
   handleEdit,
   handleDelete,
 }: Props): ColumnDef<ReceiveableRow>[] {
@@ -119,6 +128,11 @@ export function getReceiveablesColumn({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => handleSettlement(expense)}>
+                <SquareCheckBig />
+                Settle
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => handleEdit(expense)}>
                 <PenLine />
                 Edit

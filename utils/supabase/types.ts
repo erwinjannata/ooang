@@ -117,6 +117,7 @@ export type Database = {
           description: string | null
           id: string
           paid_date: string | null
+          remaining_amount: number
           save_to: string | null
           spend_from: string
           status: string
@@ -129,6 +130,7 @@ export type Database = {
           description?: string | null
           id?: string
           paid_date?: string | null
+          remaining_amount: number
           save_to?: string | null
           spend_from?: string
           status?: string
@@ -141,6 +143,7 @@ export type Database = {
           description?: string | null
           id?: string
           paid_date?: string | null
+          remaining_amount?: number
           save_to?: string | null
           spend_from?: string
           status?: string
