@@ -26,6 +26,7 @@ import { Plus, X } from "lucide-react";
 import { Dispatch, SetStateAction, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import CurrencyInput from "../../Input/CurrencyInput";
 import CustomSelect from "../../Select/select";
 
 type Props = {
@@ -104,14 +105,7 @@ function InsertIncomeDialog({ open, setOpen, setRefresh }: Props) {
                   <FormItem>
                     <FormLabel>Amount</FormLabel>
                     <FormControl>
-                      <Input
-                        {...field}
-                        type="number"
-                        value={field.value}
-                        disabled={loading}
-                        aria-invalid={!!form.formState.errors.amount}
-                        {...form.register("amount", { valueAsNumber: true })}
-                      />
+                      <CurrencyInput fieldData={field} loading={loading} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

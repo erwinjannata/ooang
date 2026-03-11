@@ -5,7 +5,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { ExpensesRow } from "@/types/expenses";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { getTodayExpenses } from "./actions";
+import { getCurrentMonthExpenses } from "./actions";
 
 function HomePage() {
   const [, setExpenses] = useState<ExpensesRow[]>([]);
@@ -15,7 +15,7 @@ function HomePage() {
   useEffect(() => {
     (async () => {
       setLoading(true);
-      const results = await getTodayExpenses();
+      const results = await getCurrentMonthExpenses();
 
       if (!results.success) toast.error(results.message);
       setExpenses(results.data || []);
@@ -41,7 +41,9 @@ function HomePage() {
     <div>
       <Card className="w-full max-w-sm border-0 shadow-md">
         <CardContent className="grid gap-2">
-          <p className="text-muted-foreground text-sm">Today&apos;s Expenses</p>
+          <p className="text-muted-foreground text-sm">
+            This month&apos;s expenses
+          </p>
           <h1 className="scroll-m-20 text-4xl font-bold tracking-tight text-balance">
             <p>{formatted}</p>
           </h1>
