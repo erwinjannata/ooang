@@ -233,7 +233,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      settle_receivable: {
+        Args: { p_amount: number; p_receivable_id: string; p_saving_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
       expense_category:

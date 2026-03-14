@@ -70,8 +70,17 @@ export async function deleteReceiveable({selected} : {selected: ReceiveableUpdat
     return {success: true, message: "Receiveable deleted successfully"}
 }
 
-// export async function settleReceiveable({selected, amount} : {selected: ReceiveableUpdate, amount: number}) : Promise<ReturnType> {
-//     if (!selected) return {success: false, message: "No receiveable selected"};
+export async function settleReceiveable({selected, amount, saving} : {selected: ReceiveableUpdate, amount: number, saving: string}) : Promise<ReturnType> {
+    if (!selected) return {success: false, message: "No receiveable selected"};
 
-//     const supabase = await createClient();
-// }
+    const supabase = await createClient();
+    const {error} = await supabase.rpc("settle_receivable", {
+        p_receivable_id: selected.id!,
+        p_amount: amount,
+        p_saving_id: saving,
+    })
+
+    if (error) return {success: false, message: error.message}
+
+    return {success: true, message: "Data piutang berhasil diupdate"}
+}

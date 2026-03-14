@@ -1,5 +1,6 @@
 "use client";
 
+import { settleReceiveable } from "@/app/(protected)/receiveables/actions";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -18,16 +19,19 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { ReceiveableUpdate } from "@/types/receiveables";
 import { useAuth } from "@/utils/authProvider";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Save, X } from "lucide-react";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import z from "zod";
 import CurrencyInput from "../../Input/CurrencyInput";
 import CustomSelect from "../../Select/select";
 
 type Props = {
+  selected: ReceiveableUpdate;
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
   setRefresh: Dispatch<SetStateAction<number>>;
@@ -41,7 +45,12 @@ const amountSchema = z.object({
   save_to: z.string().min(1, { message: "Saving is not selected" }),
 });
 
-function SettleReceiveablesDialog({ open, setOpen, setRefresh }: Props) {
+function SettleReceiveablesDialog({
+  selected,
+  open,
+  setOpen,
+  setRefresh,
+}: Props) {
   const { profile, savings } = useAuth();
   const [loading, setLoading] = useState<boolean>(false);
   const form = useForm<z.infer<typeof amountSchema>>({
@@ -58,20 +67,21 @@ function SettleReceiveablesDialog({ open, setOpen, setRefresh }: Props) {
     }
   }, [form, open]);
 
-  const onSubmit = async () => {
+  const onSubmit = async (formData: z.infer<typeof amountSchema>) => {
     setLoading(true);
-    // const result = await insertReceivable({
-    //   user_id: profile!.id,
-    //   formData: formData,
-    // });
-    // setLoading(false);
-    // if (!result.success) {
-    //   toast.error(result.message);
-    // } else {
-    //   toast.success(result.message);
-    //   setOpen(false);
-    //   setRefresh((r) => r + 1);
-    // }
+    const result = await settleReceiveable({
+      selected: selected!,
+      amount: formData.amount,
+      saving: formData.save_to,
+    });
+    setLoading(false);
+    if (!result.success) {
+      toast.error(result.message);
+    } else {
+      toast.success(result.message);
+      setOpen(false);
+      setRefresh((r) => r + 1);
+    }
   };
 
   return (

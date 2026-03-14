@@ -120,6 +120,7 @@ function ReceiveablesPage() {
         setRefresh={setRefresh}
       />
       <SettleReceiveablesDialog
+        selected={selected!}
         open={showSettleDialog}
         setOpen={setShowSettleDialog}
         setRefresh={setRefresh}
