@@ -96,16 +96,14 @@ function ReceiveablesPage() {
       {loading ? (
         <Spinner className="items-center justify-items-center mx-auto" />
       ) : (
-        <div className="bg-white shadow-md rounded-md p-4">
-          <DataTable
-            columns={receiveableColumns}
-            data={receiveables}
-            searchColumn="title"
-            pagination={pagination}
-            setPagination={setPagination}
-            loading={loading}
-          />
-        </div>
+        <DataTable
+          columns={receiveableColumns}
+          data={receiveables}
+          searchColumn="title"
+          pagination={pagination}
+          setPagination={setPagination}
+          loading={loading}
+        />
       )}
 
       <FloatingButton

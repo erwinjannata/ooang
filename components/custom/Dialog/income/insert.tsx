@@ -37,7 +37,7 @@ type Props = {
 
 const defaults = {
   title: "",
-  amount: 0,
+  amount: undefined,
   save_to: "",
   description: "",
 };

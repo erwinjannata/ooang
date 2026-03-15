@@ -38,7 +38,7 @@ type Props = {
 
 const defaults = {
   title: "",
-  amount: 0,
+  amount: undefined,
   category: "",
   spend_from: "",
   description: "",
@@ -63,7 +63,8 @@ function InsertExpenseDialog({ open, setOpen, setRefresh }: Props) {
       toast.success(result.message);
       setOpen(false);
       setRefresh((r) => r + 1);
-      form.reset(defaults);
+      form.reset();
+      form.clearErrors("amount");
     }
   };
 
@@ -72,7 +73,7 @@ function InsertExpenseDialog({ open, setOpen, setRefresh }: Props) {
       open={open}
       onOpenChange={(open) => {
         setOpen(open);
-        form.reset(defaults);
+        form.reset();
       }}
     >
       <Form {...form}>
@@ -107,7 +108,11 @@ function InsertExpenseDialog({ open, setOpen, setRefresh }: Props) {
                   <FormItem>
                     <FormLabel>Amount</FormLabel>
                     <FormControl>
-                      <CurrencyInput fieldData={field} loading={loading} />
+                      <CurrencyInput
+                        fieldData={field}
+                        loading={loading}
+                        {...form.register("amount")}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

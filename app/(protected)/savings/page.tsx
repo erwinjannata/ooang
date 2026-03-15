@@ -89,16 +89,14 @@ function SavingPage() {
       {loading ? (
         <Spinner className="items-center justify-items-center mx-auto" />
       ) : (
-        <div className="bg-white shadow-md rounded-md p-4">
-          <DataTable
-            columns={savingsColumns}
-            data={savings}
-            searchColumn="name"
-            pagination={pagination}
-            setPagination={setPagination}
-            loading={loading}
-          />
-        </div>
+        <DataTable
+          columns={savingsColumns}
+          data={savings}
+          searchColumn="name"
+          pagination={pagination}
+          setPagination={setPagination}
+          loading={loading}
+        />
       )}
       <FloatingButton
         size={useIsMobile() ? "icon-lg" : "lg"}

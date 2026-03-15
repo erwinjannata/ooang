@@ -11,14 +11,7 @@ import {
   PaginationContent,
   PaginationItem,
 } from "@/components/ui/pagination";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { PaginationType } from "@/types/paginations";
 import {
   ColumnDef,
@@ -62,8 +55,8 @@ function DataTable<TData, TValue>({
 
   return (
     <div className="rounded-md p-4">
-      <div className="items-center mb-4">
-        <InputGroup className="w-full">
+      <div className="items-center mb-4 px-2">
+        <InputGroup className="w-full bg-white">
           <InputGroupInput
             placeholder="Search..."
             value={
@@ -84,26 +77,8 @@ function DataTable<TData, TValue>({
           </InputGroupAddon>
         </InputGroup>
       </div>
-      <div className="rounded-md overflow-auto max-h-100">
+      <div className="overflow-auto max-h-110">
         <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id} className="uppercase">
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
@@ -127,49 +102,51 @@ function DataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-12 text-center font-medium italic"
                 >
-                  No Results
+                  Sorry, there&apos;s noting to show here
                 </TableCell>
               </TableRow>
             )}
           </TableBody>
         </Table>
       </div>
-      <div className="flex flex-row justify-end space-x-2 py-4">
-        <Pagination>
-          <PaginationContent>
-            <PaginationItem>
-              <Button
-                variant="ghost"
-                className="select-none"
-                disabled={!pagination.hasPrevPage}
-                onClick={() =>
-                  setPagination((prev) => ({
-                    ...prev,
-                    pageIndex: prev.pageIndex - 1,
-                  }))
-                }
-              >
-                <ArrowLeft /> Previous
-              </Button>
-            </PaginationItem>
-            <PaginationItem>
-              <Button
-                variant="ghost"
-                className="select-none"
-                disabled={!pagination.hasNextPage}
-                onClick={() =>
-                  setPagination((prev) => ({
-                    ...prev,
-                    pageIndex: prev.pageIndex + 1,
-                  }))
-                }
-              >
-                Next <ArrowRight />
-              </Button>
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
-      </div>
+      {table.getRowModel().rows?.length ? (
+        <div className="flex flex-row justify-end space-x-2 py-4">
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <Button
+                  variant="ghost"
+                  className="select-none"
+                  disabled={!pagination.hasPrevPage}
+                  onClick={() =>
+                    setPagination((prev) => ({
+                      ...prev,
+                      pageIndex: prev.pageIndex - 1,
+                    }))
+                  }
+                >
+                  <ArrowLeft /> Previous
+                </Button>
+              </PaginationItem>
+              <PaginationItem>
+                <Button
+                  variant="ghost"
+                  className="select-none"
+                  disabled={!pagination.hasNextPage}
+                  onClick={() =>
+                    setPagination((prev) => ({
+                      ...prev,
+                      pageIndex: prev.pageIndex + 1,
+                    }))
+                  }
+                >
+                  Next <ArrowRight />
+                </Button>
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </div>
+      ) : null}
     </div>
   );
 }

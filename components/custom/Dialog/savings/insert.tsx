@@ -22,11 +22,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { SavingsFormData, savingsSchema } from "@/schemas/forms/savings";
 import { useAuth } from "@/utils/authProvider";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Plus, X } from "lucide-react";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import CurrencyInput from "../../Input/CurrencyInput";
-import { X, Plus } from "lucide-react";
 
 type Props = {
   open: boolean;
@@ -41,7 +41,7 @@ function InsertSavingDialog({ open, setOpen, setRefresh }: Props) {
     resolver: zodResolver(savingsSchema),
     defaultValues: {
       name: "",
-      balance: 0,
+      balance: undefined,
       description: "",
     },
   });

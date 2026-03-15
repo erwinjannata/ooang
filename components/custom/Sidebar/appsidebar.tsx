@@ -51,6 +51,8 @@ export function AppSidebar({
   const { isMobile } = useSidebar();
   const isOnMobile = useIsMobile();
 
+  if (isOnMobile === undefined) return null;
+
   return (
     <Sidebar
       collapsible="icon"

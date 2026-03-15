@@ -47,7 +47,7 @@ function InsertReceiveablesDialog({ open, setOpen, setRefresh }: Props) {
     resolver: zodResolver(receiveablesSchema),
     defaultValues: {
       title: "",
-      amount: 0,
+      amount: undefined,
       spend_from: "",
       description: "",
     },
