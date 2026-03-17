@@ -32,12 +32,13 @@ export function getIncomeColumn({
       header: () => null,
       cell: ({ row }) => {
         const income = row.original;
+
         return (
-          <Card className="w-full border-none shadow-md hover:bg-blue-50 hover:shadow-blue-100">
+          <Card className="w-full border-none shadow-md hover:bg-neutral-200 hover:shadow-neutral-100">
             <CardContent>
               <div className="flex flex-row justify-between w-full">
                 <div className="flex items-center gap-1 justify-start">
-                  <span className="font-medium text-lg">
+                  <span className="font-medium text-xl">
                     {new Intl.NumberFormat("id-ID", {
                       style: "currency",
                       currency: "IDR",

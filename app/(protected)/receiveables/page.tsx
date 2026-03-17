@@ -1,7 +1,7 @@
 "use client";
 
 import FloatingButton from "@/components/custom/Button/FloatingButton";
-import CustomAlertDialog from "@/components/custom/Dialog/customAlertDialog";
+import DestructiveAlertDialog from "@/components/custom/Dialog/desctuctiveAlertDialog";
 import InsertReceiveablesDialog from "@/components/custom/Dialog/receiveables/insert";
 import SettleReceiveablesDialog from "@/components/custom/Dialog/receiveables/settlement";
 import UpdateReceiveablesDialog from "@/components/custom/Dialog/receiveables/update";
@@ -129,15 +129,12 @@ function ReceiveablesPage() {
         selected={selected!}
         setRefresh={setRefresh}
       />
-      <CustomAlertDialog
+      <DestructiveAlertDialog
         open={showDeleteDialog}
         onOpen={setShowDeleteDialog}
-        title="Remove receiveable"
+        title="Remove Receiveable record?"
         onAction={() => onDelete()}
-      >
-        Proceed to remove <span className="font-medium">{selected?.title}</span>{" "}
-        receiveable record? This action cannot be undone
-      </CustomAlertDialog>
+      />
     </div>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import FloatingButton from "@/components/custom/Button/FloatingButton";
-import CustomAlertDialog from "@/components/custom/Dialog/customAlertDialog";
+import DestructiveAlertDialog from "@/components/custom/Dialog/desctuctiveAlertDialog";
 import InsertExpenseDialog from "@/components/custom/Dialog/expenses/insert";
 import UpdateExpenseDialog from "@/components/custom/Dialog/expenses/update";
 import { getExpensesColumn } from "@/components/custom/Table/columns/expenses";
@@ -113,15 +113,12 @@ function ExpensesPage() {
         setOpen={setShowEditDialog}
         setRefresh={setRefresh}
       />
-      <CustomAlertDialog
+      <DestructiveAlertDialog
         open={showDeleteDialog}
         onOpen={setShowDeleteDialog}
-        title="Remove expenses"
+        title="Remove Expense record?"
         onAction={() => onDelete()}
-      >
-        Proceed to remove <span className="font-medium">{selected?.title}</span>{" "}
-        expenses record? This action cannot be undone
-      </CustomAlertDialog>
+      />
     </div>
   );
 }

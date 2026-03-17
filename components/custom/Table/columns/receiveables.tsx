@@ -1,3 +1,4 @@
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -14,6 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { toLocDate } from "@/hooks/toLocDate";
+import { receiveableBadge } from "@/lib/constants/receiveableBadge";
 import { ReceiveableRow, ReceiveableUpdate } from "@/types/receiveables";
 import { ColumnDef } from "@tanstack/react-table";
 import { Eraser, MoreHorizontal, PenLine, SquareCheckBig } from "lucide-react";
@@ -35,12 +37,15 @@ export function getReceiveablesColumn({
       header: () => null,
       cell: ({ row }) => {
         const receiveable = row.original;
+        const { variant, className } =
+          receiveableBadge[receiveable.status as keyof typeof receiveableBadge];
+
         return (
-          <Card className="w-full border-none shadow-md hover:bg-blue-50 hover:shadow-blue-100">
+          <Card className="w-full border-none shadow-md hover:bg-neutral-200 hover:shadow-neutral-100">
             <CardContent>
               <div className="flex flex-row justify-between w-full">
                 <div className="flex items-center gap-1 justify-start">
-                  <span className="font-medium text-lg">
+                  <span className="font-medium text-xl">
                     {new Intl.NumberFormat("id-ID", {
                       style: "currency",
                       currency: "IDR",
@@ -91,17 +96,19 @@ export function getReceiveablesColumn({
             <CardFooter className="justify-between gap-3 max-sm:flex-col max-sm:items-stretch">
               <div className="flex items-center gap-3 justify-between w-full">
                 <div className="flex flex-row justify-between w-full">
-                  <div className="flex flex-col gap-0.5">
+                  <div className="flex flex-col gap-2.5">
+                    <CardDescription className="uppercase">
+                      <Badge variant={variant} className={className}>
+                        {receiveable.status}
+                      </Badge>
+                    </CardDescription>
                     <CardTitle className="flex items-center gap-1 text-md">
                       {receiveable.title}
                     </CardTitle>
-                    <CardDescription className="capitalize">
-                      {receiveable.status}
-                    </CardDescription>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="flex flex-col gap-0.5 justify-end items-end">
+                  <div className="flex flex-col gap-2.5 justify-end items-end">
                     <CardTitle className="flex gap-1 text-md">
                       {receiveable.saving_spent?.name}
                     </CardTitle>

@@ -1,3 +1,4 @@
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -34,9 +35,9 @@ export function getSavingsColumns({
       cell: ({ row }) => {
         const saving = row.original;
         return (
-          <Card className="w-full border-none">
+          <Card className="w-full border-none shadow-md hover:bg-neutral-200 hover:shadow-neutral-100">
             <CardContent>
-              <span className="font-medium text-lg">
+              <span className="font-medium text-xl">
                 {new Intl.NumberFormat("id-ID", {
                   style: "currency",
                   currency: "IDR",
@@ -45,13 +46,27 @@ export function getSavingsColumns({
             </CardContent>
             <CardFooter className="justify-between gap-3 max-sm:flex-col max-sm:items-stretch">
               <div className="flex items-center gap-3">
-                <div className="flex flex-col gap-0.5">
+                <div className="flex flex-col gap-2.5">
+                  <CardDescription className="uppercase">
+                    {saving.is_active ? (
+                      <Badge
+                        variant="default"
+                        className="bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300"
+                      >
+                        Active
+                      </Badge>
+                    ) : (
+                      <Badge
+                        variant="destructive"
+                        className="bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300"
+                      >
+                        Inactive
+                      </Badge>
+                    )}
+                  </CardDescription>
                   <CardTitle className="flex items-center gap-1 text-md">
                     {saving.name}
                   </CardTitle>
-                  <CardDescription className="capitalize">
-                    {saving.is_active ? "active" : "inactive"}
-                  </CardDescription>
                 </div>
               </div>
               <div className="flex items-center gap-1 justify-end">
