@@ -54,7 +54,7 @@ function DataTable<TData, TValue>({
   });
 
   return (
-    <div className="rounded-md p-4">
+    <div className="rounded-md py-4 px-2">
       <div className="items-center mb-4 px-2">
         <InputGroup className="w-full bg-white">
           <InputGroupInput

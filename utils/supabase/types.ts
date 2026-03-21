@@ -14,6 +14,73 @@ export type Database = {
   }
   public: {
     Tables: {
+      debts: {
+        Row: {
+          amount: number
+          created_at: string
+          description: string | null
+          id: string
+          is_deposited: boolean
+          paid_date: string | null
+          paid_from: string
+          remaining_amount: number
+          save_to: string | null
+          status: Database["public"]["Enums"]["debts_status"]
+          title: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_deposited?: boolean
+          paid_date?: string | null
+          paid_from?: string
+          remaining_amount: number
+          save_to?: string | null
+          status?: Database["public"]["Enums"]["debts_status"]
+          title: string
+          user_id?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_deposited?: boolean
+          paid_date?: string | null
+          paid_from?: string
+          remaining_amount?: number
+          save_to?: string | null
+          status?: Database["public"]["Enums"]["debts_status"]
+          title?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "debts_paid_from_fkey"
+            columns: ["paid_from"]
+            isOneToOne: false
+            referencedRelation: "user_savings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "debts_save_to_fkey"
+            columns: ["save_to"]
+            isOneToOne: false
+            referencedRelation: "user_savings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "debts_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "user_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       expenses: {
         Row: {
           amount: number
@@ -239,6 +306,7 @@ export type Database = {
       }
     }
     Enums: {
+      debts_status: "unpaid" | "partial" | "paid"
       expense_category:
         | "essential"
         | "non essential"
@@ -371,6 +439,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      debts_status: ["unpaid", "partial", "paid"],
       expense_category: [
         "essential",
         "non essential",
