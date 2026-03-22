@@ -22,7 +22,7 @@ export type Database = {
           id: string
           is_deposited: boolean
           paid_date: string | null
-          paid_from: string
+          paid_from: string | null
           remaining_amount: number
           save_to: string | null
           status: Database["public"]["Enums"]["debts_status"]
@@ -36,7 +36,7 @@ export type Database = {
           id?: string
           is_deposited?: boolean
           paid_date?: string | null
-          paid_from?: string
+          paid_from?: string | null
           remaining_amount: number
           save_to?: string | null
           status?: Database["public"]["Enums"]["debts_status"]
@@ -50,7 +50,7 @@ export type Database = {
           id?: string
           is_deposited?: boolean
           paid_date?: string | null
-          paid_from?: string
+          paid_from?: string | null
           remaining_amount?: number
           save_to?: string | null
           status?: Database["public"]["Enums"]["debts_status"]
@@ -269,7 +269,9 @@ export type Database = {
           description: string | null
           id: string
           is_active: boolean
+          is_default: boolean
           name: string
+          type: Database["public"]["Enums"]["saving_type"]
           updated_at: string
           user_id: string
         }
@@ -279,7 +281,9 @@ export type Database = {
           description?: string | null
           id?: string
           is_active?: boolean
+          is_default?: boolean
           name: string
+          type?: Database["public"]["Enums"]["saving_type"]
           updated_at?: string
           user_id: string
         }
@@ -289,7 +293,9 @@ export type Database = {
           description?: string | null
           id?: string
           is_active?: boolean
+          is_default?: boolean
           name?: string
+          type?: Database["public"]["Enums"]["saving_type"]
           updated_at?: string
           user_id?: string
         }
@@ -300,6 +306,11 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      init_user_account: { Args: never; Returns: undefined }
+      settle_debt: {
+        Args: { p_amount: number; p_debt_id: string; p_saving_id: string }
+        Returns: undefined
+      }
       settle_receivable: {
         Args: { p_amount: number; p_receivable_id: string; p_saving_id: string }
         Returns: undefined
@@ -312,6 +323,7 @@ export type Database = {
         | "non essential"
         | "cultural"
         | "unexpected"
+      saving_type: "cash" | "card"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -446,6 +458,7 @@ export const Constants = {
         "cultural",
         "unexpected",
       ],
+      saving_type: ["cash", "card"],
     },
   },
 } as const

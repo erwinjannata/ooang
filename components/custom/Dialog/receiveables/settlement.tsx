@@ -90,7 +90,7 @@ function SettleReceiveablesDialog({
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Settle Receiveable</DialogTitle>
+              <DialogTitle>Receiveable Settlement</DialogTitle>
               <DialogDescription></DialogDescription>
             </DialogHeader>
             <div className="grid gap-6 p-4">
@@ -112,7 +112,7 @@ function SettleReceiveablesDialog({
                 name="save_to"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Saving</FormLabel>
+                    <FormLabel>Spent From</FormLabel>
                     <FormControl>
                       <CustomSelect
                         {...field}

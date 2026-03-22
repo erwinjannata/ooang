@@ -57,38 +57,19 @@ function ReceiveablesPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pagination.pageIndex, refresh]);
 
-  const handleSettlement = (selected: ReceiveableUpdate) => {
-    setSelected(selected);
-    setShowSettleDialog(true);
-  };
-
-  const handleEdit = (selected: ReceiveableUpdate) => {
-    setSelected(selected);
-    setShowUpdateDialog(true);
-  };
-
-  const handleDelete = async (selected: ReceiveableRow) => {
-    await setSelected(selected);
-    setShowDeleteDialog(true);
-  };
-
-  const onDelete = async () => {
-    setLoading(true);
-    const results = await deleteReceiveable({ selected: selected! });
-    setLoading(false);
-    if (!results.success) {
-      toast.error(results.message);
-    } else {
-      toast.success(results.message);
-      setShowDeleteDialog(false);
-      setRefresh((r) => r + 1);
-    }
-  };
-
   const receiveableColumns = getReceiveablesColumn({
-    handleSettlement: handleSettlement,
-    handleEdit: handleEdit,
-    handleDelete: handleDelete,
+    handleSettlement: (selected: ReceiveableUpdate) => {
+      setSelected(selected);
+      setShowSettleDialog(true);
+    },
+    handleEdit: (selected: ReceiveableUpdate) => {
+      setSelected(selected);
+      setShowUpdateDialog(true);
+    },
+    handleDelete: async (selected: ReceiveableRow) => {
+      await setSelected(selected);
+      setShowDeleteDialog(true);
+    },
   });
 
   return (
@@ -133,7 +114,18 @@ function ReceiveablesPage() {
         open={showDeleteDialog}
         onOpen={setShowDeleteDialog}
         title="Remove Receiveable record?"
-        onAction={() => onDelete()}
+        onAction={async () => {
+          setLoading(true);
+          const results = await deleteReceiveable({ selected: selected! });
+          setLoading(false);
+          if (!results.success) {
+            toast.error(results.message);
+          } else {
+            toast.success(results.message);
+            setShowDeleteDialog(false);
+            setRefresh((r) => r + 1);
+          }
+        }}
       />
     </div>
   );

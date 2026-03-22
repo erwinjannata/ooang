@@ -1,6 +1,4 @@
-"use client";
-
-import { updateReceivable } from "@/app/(protected)/receiveables/actions";
+import { settleDebts } from "@/app/(protected)/debts/actions";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -19,59 +17,51 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import {
-  ReceiveablesFormData,
-  receiveablesSchema,
-} from "@/schemas/forms/receiveables";
-import { ReceiveableUpdate } from "@/types/receiveables";
+  DebtsSettlementFormData,
+  debtsSettlementSchema,
+} from "@/schemas/forms/debts";
+import { DebtsUpdate } from "@/types/debts";
 import { useAuth } from "@/utils/authProvider";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Save, X } from "lucide-react";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
 import CurrencyInput from "../../Input/CurrencyInput";
 import CustomSelect from "../../Select/select";
+import { toast } from "sonner";
 
 type Props = {
-  selected: ReceiveableUpdate;
+  selected: DebtsUpdate;
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
   setRefresh: Dispatch<SetStateAction<number>>;
 };
 
-function UpdateReceiveablesDialog({
-  selected,
-  open,
-  setOpen,
-  setRefresh,
-}: Props) {
+function SettleDebtDialog({ selected, open, setOpen, setRefresh }: Props) {
   const { profile, savings } = useAuth();
   const [loading, setLoading] = useState<boolean>(false);
-  const form = useForm<ReceiveablesFormData>({
-    resolver: zodResolver(receiveablesSchema),
+  const form = useForm<DebtsSettlementFormData>({
+    resolver: zodResolver(debtsSettlementSchema),
     defaultValues: {
-      title: "",
       amount: 0,
-      spend_from: "",
-      description: "",
+      paid_from: "",
     },
   });
 
   useEffect(() => {
-    if (open && selected) {
-      form.reset(selected);
+    if (open) {
+      form.reset();
     }
-  }, [form, open, selected]);
+  }, [form, open]);
 
-  const onSubmit = async (formData: ReceiveablesFormData) => {
+  const onSubmit = async (formData: DebtsSettlementFormData) => {
     setLoading(true);
-    const result = await updateReceivable({
-      formData: formData,
+    const result = await settleDebts({
+      data: formData,
       selected: selected!,
     });
+
     setLoading(false);
     if (!result.success) {
       toast.error(result.message);
@@ -88,27 +78,10 @@ function UpdateReceiveablesDialog({
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Receievable Detail</DialogTitle>
-              <DialogDescription></DialogDescription>
+              <DialogTitle>Debt Settlement</DialogTitle>
+              <DialogDescription>{selected?.title}</DialogDescription>
             </DialogHeader>
-            <div className="grid gap-6 p-4">
-              <FormField
-                control={form.control}
-                name="title"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Title</FormLabel>
-                    <FormControl>
-                      <Input
-                        disabled={loading}
-                        {...field}
-                        {...form.register("title")}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            <div className="overflow-y-auto max-h-[60vh] px-2 py-4 grid gap-6">
               <FormField
                 control={form.control}
                 name="amount"
@@ -124,10 +97,10 @@ function UpdateReceiveablesDialog({
               />
               <FormField
                 control={form.control}
-                name="spend_from"
+                name="paid_from"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Saving</FormLabel>
+                    <FormLabel>Spent From</FormLabel>
                     <FormControl>
                       <CustomSelect
                         {...field}
@@ -136,32 +109,13 @@ function UpdateReceiveablesDialog({
                           {
                             label: `${profile?.display_name}'s savings`,
                             items: savings!.map((saving) => ({
-                              label: saving.name,
+                              label: saving.name.toLocaleUpperCase(),
                               value: saving.id,
                             })),
                           },
                         ]}
                         disabled={loading}
                         onChange={(val) => field.onChange(val)}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Description</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        {...field}
-                        placeholder="Saving description here..."
-                        value={field.value || ""}
-                        disabled={loading}
-                        {...form.register("description")}
                       />
                     </FormControl>
                     <FormMessage />
@@ -192,4 +146,4 @@ function UpdateReceiveablesDialog({
   );
 }
 
-export default UpdateReceiveablesDialog;
+export default SettleDebtDialog;

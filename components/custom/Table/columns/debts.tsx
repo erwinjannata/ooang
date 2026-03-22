@@ -11,20 +11,23 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { toLocDate } from "@/hooks/toLocDate";
 import { receiveableBadge } from "@/lib/constants/receiveableBadge";
 import { DebtsRow, DebtsUpdate } from "@/types/debts";
 import { ColumnDef } from "@tanstack/react-table";
-import { Eraser, MoreHorizontal, PenLine } from "lucide-react";
+import { Eraser, MoreHorizontal, PenLine, SquareCheckBig } from "lucide-react";
 
 type Props = {
+  handleSettlement: (selected: DebtsUpdate) => void;
   handleEdit: (selected: DebtsUpdate) => void;
   handleDelete: (selected: DebtsRow) => Promise<void>;
 };
 
 export function getDebtsColumn({
+  handleSettlement,
   handleEdit,
   handleDelete,
 }: Props): ColumnDef<DebtsRow>[] {
@@ -61,6 +64,14 @@ export function getDebtsColumn({
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
+                      <DropdownMenuItem
+                        onClick={() => handleSettlement(debt)}
+                        disabled={debt.status === "paid"}
+                      >
+                        <SquareCheckBig />
+                        Settle
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
                       <DropdownMenuItem onClick={() => handleEdit(debt)}>
                         <PenLine />
                         Edit

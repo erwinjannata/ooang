@@ -78,7 +78,7 @@ function UpdateIncomeDialog({ selected, open, setOpen, setRefresh }: Props) {
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Expense Detail</DialogTitle>
+              <DialogTitle>Income Detail</DialogTitle>
               <DialogDescription>{selected?.title}</DialogDescription>
             </DialogHeader>
             <div className="overflow-y-auto max-h-[60vh] px-2 py-4 grid gap-6">

@@ -52,33 +52,15 @@ function ExpensesPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pagination.pageIndex, refresh]);
 
-  const handleEdit = (selected: ExpensesUpdate) => {
-    setSelected(selected);
-    setShowEditDialog(true);
-  };
-
-  const handleDelete = async (selected: ExpensesRow) => {
-    await setSelected(selected);
-    setShowDeleteDialog(true);
-  };
-
-  const onDelete = async () => {
-    setLoading(true);
-    const results = await deleteExpenses({ selected: selected! });
-
-    setLoading(false);
-    if (!results.success) {
-      toast.error(results.message);
-    } else {
-      toast.success(results.message);
-      setShowDeleteDialog(false);
-      setRefresh((r) => r + 1);
-    }
-  };
-
   const expensesColumns = getExpensesColumn({
-    handleEdit,
-    handleDelete,
+    handleEdit: (selected: ExpensesUpdate) => {
+      setSelected(selected);
+      setShowEditDialog(true);
+    },
+    handleDelete: async (selected: ExpensesRow) => {
+      await setSelected(selected);
+      setShowDeleteDialog(true);
+    },
   });
 
   return (
@@ -117,7 +99,19 @@ function ExpensesPage() {
         open={showDeleteDialog}
         onOpen={setShowDeleteDialog}
         title="Remove Expense record?"
-        onAction={() => onDelete()}
+        onAction={async () => {
+          setLoading(true);
+          const results = await deleteExpenses({ selected: selected! });
+
+          setLoading(false);
+          if (!results.success) {
+            toast.error(results.message);
+          } else {
+            toast.success(results.message);
+            setShowDeleteDialog(false);
+            setRefresh((r) => r + 1);
+          }
+        }}
       />
     </div>
   );

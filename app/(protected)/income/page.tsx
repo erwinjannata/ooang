@@ -48,32 +48,15 @@ function IncomePage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pagination.pageIndex, refresh]);
 
-  const handleEdit = (selected: IncomeUpdate) => {
-    setSelected(selected);
-    setShowEditDialog(true);
-  };
-
-  const handleDelete = async (selected: IncomeRow) => {
-    await setSelected(selected);
-    setShowDeleteDialog(true);
-  };
-
-  const onDelete = async () => {
-    setLoading(true);
-    const results = await deleteIncome({ selected: selected! });
-    setLoading(false);
-    if (!results.success) {
-      toast.error(results.message);
-    } else {
-      toast.success(results.message);
-      setShowDeleteDialog(false);
-      setRefresh((r) => r + 1);
-    }
-  };
-
   const incomeColumns = getIncomeColumn({
-    handleEdit,
-    handleDelete,
+    handleEdit: (selected: IncomeUpdate) => {
+      setSelected(selected);
+      setShowEditDialog(true);
+    },
+    handleDelete: async (selected: IncomeRow) => {
+      await setSelected(selected);
+      setShowDeleteDialog(true);
+    },
   });
 
   return (
@@ -112,7 +95,18 @@ function IncomePage() {
         open={showDeleteDialog}
         onOpen={setShowDeleteDialog}
         title="Remove Income record?"
-        onAction={() => onDelete()}
+        onAction={async () => {
+          setLoading(true);
+          const results = await deleteIncome({ selected: selected! });
+          setLoading(false);
+          if (!results.success) {
+            toast.error(results.message);
+          } else {
+            toast.success(results.message);
+            setShowDeleteDialog(false);
+            setRefresh((r) => r + 1);
+          }
+        }}
       />
     </div>
   );

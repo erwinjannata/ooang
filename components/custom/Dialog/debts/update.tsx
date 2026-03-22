@@ -1,6 +1,4 @@
-"use client";
-
-import { updateReceivable } from "@/app/(protected)/receiveables/actions";
+import { updateDebts } from "@/app/(protected)/debts/actions";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -21,11 +19,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  ReceiveablesFormData,
-  receiveablesSchema,
-} from "@/schemas/forms/receiveables";
-import { ReceiveableUpdate } from "@/types/receiveables";
+import { DebtsFormData, debtsSchema } from "@/schemas/forms/debts";
+import { DebtsUpdate } from "@/types/debts";
 import { useAuth } from "@/utils/authProvider";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Save, X } from "lucide-react";
@@ -36,26 +31,21 @@ import CurrencyInput from "../../Input/CurrencyInput";
 import CustomSelect from "../../Select/select";
 
 type Props = {
-  selected: ReceiveableUpdate;
+  selected: DebtsUpdate;
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
   setRefresh: Dispatch<SetStateAction<number>>;
 };
 
-function UpdateReceiveablesDialog({
-  selected,
-  open,
-  setOpen,
-  setRefresh,
-}: Props) {
+function UpdateDebtDialog({ selected, open, setOpen, setRefresh }: Props) {
   const { profile, savings } = useAuth();
   const [loading, setLoading] = useState<boolean>(false);
-  const form = useForm<ReceiveablesFormData>({
-    resolver: zodResolver(receiveablesSchema),
+  const form = useForm<DebtsFormData>({
+    resolver: zodResolver(debtsSchema),
     defaultValues: {
       title: "",
       amount: 0,
-      spend_from: "",
+      save_to: "",
       description: "",
     },
   });
@@ -64,14 +54,15 @@ function UpdateReceiveablesDialog({
     if (open && selected) {
       form.reset(selected);
     }
-  }, [form, open, selected]);
+  }, [selected, form, open]);
 
-  const onSubmit = async (formData: ReceiveablesFormData) => {
+  const onSubmit = async (formData: DebtsFormData) => {
     setLoading(true);
-    const result = await updateReceivable({
-      formData: formData,
+    const result = await updateDebts({
+      data: formData,
       selected: selected!,
     });
+
     setLoading(false);
     if (!result.success) {
       toast.error(result.message);
@@ -88,10 +79,10 @@ function UpdateReceiveablesDialog({
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Receievable Detail</DialogTitle>
-              <DialogDescription></DialogDescription>
+              <DialogTitle>Debt Detail</DialogTitle>
+              <DialogDescription>{selected?.title}</DialogDescription>
             </DialogHeader>
-            <div className="grid gap-6 p-4">
+            <div className="overflow-y-auto max-h-[60vh] px-2 py-4 grid gap-6">
               <FormField
                 control={form.control}
                 name="title"
@@ -124,7 +115,7 @@ function UpdateReceiveablesDialog({
               />
               <FormField
                 control={form.control}
-                name="spend_from"
+                name="save_to"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Saving</FormLabel>
@@ -136,12 +127,13 @@ function UpdateReceiveablesDialog({
                           {
                             label: `${profile?.display_name}'s savings`,
                             items: savings!.map((saving) => ({
-                              label: saving.name,
+                              label: saving.name.toLocaleUpperCase(),
                               value: saving.id,
                             })),
                           },
                         ]}
                         disabled={loading}
+                        value={field.value ?? ""}
                         onChange={(val) => field.onChange(val)}
                       />
                     </FormControl>
@@ -158,10 +150,9 @@ function UpdateReceiveablesDialog({
                     <FormControl>
                       <Textarea
                         {...field}
-                        placeholder="Saving description here..."
-                        value={field.value || ""}
+                        placeholder="Expense description here..."
+                        value={field?.value || ""}
                         disabled={loading}
-                        {...form.register("description")}
                       />
                     </FormControl>
                     <FormMessage />
@@ -192,4 +183,4 @@ function UpdateReceiveablesDialog({
   );
 }
 
-export default UpdateReceiveablesDialog;
+export default UpdateDebtDialog;

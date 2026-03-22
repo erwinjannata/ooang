@@ -27,6 +27,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import CurrencyInput from "../../Input/CurrencyInput";
+import CustomSelect from "../../Select/select";
 
 type Props = {
   selected: SavingsUpdate;
@@ -43,6 +44,7 @@ function UpdateSavingDialog({ selected, open, setOpen, setRefresh }: Props) {
       name: "",
       balance: 0,
       description: "",
+      type: undefined,
     },
   });
 
@@ -78,7 +80,7 @@ function UpdateSavingDialog({ selected, open, setOpen, setRefresh }: Props) {
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Saving Detail</DialogTitle>
+              <DialogTitle>Account Detail</DialogTitle>
               <DialogDescription>{selected?.name}</DialogDescription>
             </DialogHeader>
             <div className="grid gap-6 p-4">
@@ -101,10 +103,37 @@ function UpdateSavingDialog({ selected, open, setOpen, setRefresh }: Props) {
               />
               <FormField
                 control={form.control}
+                name="type"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Type</FormLabel>
+                    <FormControl>
+                      <CustomSelect
+                        {...field}
+                        label="Saving"
+                        groups={[
+                          {
+                            label: "Saving",
+                            items: [
+                              { label: "Cash", value: "cash" },
+                              { label: "Card", value: "card" },
+                            ],
+                          },
+                        ]}
+                        disabled={loading}
+                        onChange={(val) => field.onChange(val)}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
                 name="balance"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Current Saving</FormLabel>
+                    <FormLabel>Balance</FormLabel>
                     <FormControl>
                       <CurrencyInput fieldData={field} loading={loading} />
                     </FormControl>
@@ -121,7 +150,7 @@ function UpdateSavingDialog({ selected, open, setOpen, setRefresh }: Props) {
                     <FormControl>
                       <Textarea
                         {...field}
-                        placeholder="Saving description here..."
+                        placeholder="Account description here..."
                         value={field.value || ""}
                         disabled={loading}
                         {...form.register("description")}

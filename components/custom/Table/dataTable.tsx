@@ -12,6 +12,7 @@ import {
   PaginationItem,
 } from "@/components/ui/pagination";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import { cn } from "@/lib/utils";
 import { PaginationType } from "@/types/paginations";
 import {
   ColumnDef,
@@ -56,7 +57,13 @@ function DataTable<TData, TValue>({
   return (
     <div className="rounded-md py-4 px-2">
       <div className="items-center mb-4 px-2">
-        <InputGroup className="w-full bg-white">
+        <InputGroup
+          className={cn(
+            "w-full bg-white",
+            loading && "pointer-events-none opacity-50",
+            data.length === 0 && "pointer-events-none hidden",
+          )}
+        >
           <InputGroupInput
             placeholder="Search..."
             value={
@@ -102,7 +109,7 @@ function DataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-12 text-center font-medium italic"
                 >
-                  Sorry, there&apos;s noting to show here
+                  Sorry there&apos;s nothing to show here, for now...
                 </TableCell>
               </TableRow>
             )}

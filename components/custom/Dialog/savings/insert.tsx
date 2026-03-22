@@ -27,6 +27,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import CurrencyInput from "../../Input/CurrencyInput";
+import CustomSelect from "../../Select/select";
 
 type Props = {
   open: boolean;
@@ -42,6 +43,7 @@ function InsertSavingDialog({ open, setOpen, setRefresh }: Props) {
     defaultValues: {
       name: "",
       balance: undefined,
+      type: undefined,
       description: "",
     },
   });
@@ -75,9 +77,10 @@ function InsertSavingDialog({ open, setOpen, setRefresh }: Props) {
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>New Saving</DialogTitle>
+              <DialogTitle>New Saving Account</DialogTitle>
               <DialogDescription>
-                Provide data about your new saving
+                Provide data about your new saving account, so you can track and
+                manage it here.
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-6 p-4">
@@ -89,9 +92,37 @@ function InsertSavingDialog({ open, setOpen, setRefresh }: Props) {
                     <FormLabel>Account Name</FormLabel>
                     <FormControl>
                       <Input
-                        disabled={loading}
                         {...field}
+                        disabled={loading}
+                        placeholder={`e.g. ${profile?.display_name}'s saving`}
                         {...form.register("name")}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="type"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Type</FormLabel>
+                    <FormControl>
+                      <CustomSelect
+                        {...field}
+                        label="Saving"
+                        groups={[
+                          {
+                            label: "Saving",
+                            items: [
+                              { label: "Cash", value: "cash" },
+                              { label: "Card", value: "card" },
+                            ],
+                          },
+                        ]}
+                        disabled={loading}
+                        onChange={(val) => field.onChange(val)}
                       />
                     </FormControl>
                     <FormMessage />
@@ -103,7 +134,7 @@ function InsertSavingDialog({ open, setOpen, setRefresh }: Props) {
                 name="balance"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Current Saving</FormLabel>
+                    <FormLabel>Balance</FormLabel>
                     <FormControl>
                       <CurrencyInput fieldData={field} loading={loading} />
                     </FormControl>
@@ -120,7 +151,7 @@ function InsertSavingDialog({ open, setOpen, setRefresh }: Props) {
                     <FormControl>
                       <Textarea
                         {...field}
-                        placeholder="Saving description here..."
+                        placeholder="Account description here..."
                         value={field.value || ""}
                         disabled={loading}
                         {...form.register("description")}
@@ -145,7 +176,7 @@ function InsertSavingDialog({ open, setOpen, setRefresh }: Props) {
                 onClick={form.handleSubmit(onSubmit)}
               >
                 <Plus />
-                Save
+                Create
               </Button>
             </DialogFooter>
           </DialogContent>

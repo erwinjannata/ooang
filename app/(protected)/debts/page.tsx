@@ -2,8 +2,9 @@
 
 import FloatingButton from "@/components/custom/Button/FloatingButton";
 import InsertDebtDialog from "@/components/custom/Dialog/debts/insert";
+import SettleDebtDialog from "@/components/custom/Dialog/debts/settlement";
+import UpdateDebtDialog from "@/components/custom/Dialog/debts/update";
 import DestructiveAlertDialog from "@/components/custom/Dialog/desctuctiveAlertDialog";
-import UpdateExpenseDialog from "@/components/custom/Dialog/expenses/update";
 import { getDebtsColumn } from "@/components/custom/Table/columns/debts";
 import DataTable from "@/components/custom/Table/dataTable";
 import { Spinner } from "@/components/ui/spinner";
@@ -18,6 +19,7 @@ import { deleteDebts, fetchDebts } from "./actions";
 function DebtsPage() {
   const [debts, setDebts] = useState<DebtsRow[]>([]);
   const [showNewDialog, setShowNewDialog] = useState<boolean>(false);
+  const [showSettleDialog, setShowSettleDialog] = useState<boolean>(false);
   const [showEditDialog, setShowEditDialog] = useState<boolean>(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -52,20 +54,11 @@ function DebtsPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pagination.pageIndex, refresh]);
 
-  const onDelete = async () => {
-    setLoading(true);
-    const results = await deleteDebts({ selected: selected! });
-    setLoading(false);
-    if (!results.success) {
-      toast.error(results.message);
-    } else {
-      toast.success(results.message);
-      setShowDeleteDialog(false);
-      setRefresh((r) => r + 1);
-    }
-  };
-
   const columns = getDebtsColumn({
+    handleSettlement: async (selected: DebtsUpdate) => {
+      setSelected(selected);
+      setShowSettleDialog(true);
+    },
     handleEdit: async (selected: DebtsUpdate) => {
       setSelected(selected);
       setShowEditDialog(true);
@@ -102,7 +95,13 @@ function DebtsPage() {
         setOpen={setShowNewDialog}
         setRefresh={setRefresh}
       />
-      <UpdateExpenseDialog
+      <SettleDebtDialog
+        selected={selected!}
+        open={showSettleDialog}
+        setOpen={setShowSettleDialog}
+        setRefresh={setRefresh}
+      />
+      <UpdateDebtDialog
         selected={selected!}
         open={showEditDialog}
         setOpen={setShowEditDialog}
@@ -112,7 +111,18 @@ function DebtsPage() {
         open={showDeleteDialog}
         onOpen={setShowDeleteDialog}
         title="Remove Debt record?"
-        onAction={() => onDelete()}
+        onAction={async () => {
+          setLoading(true);
+          const results = await deleteDebts({ selected: selected! });
+          setLoading(false);
+          if (!results.success) {
+            toast.error(results.message);
+          } else {
+            toast.success(results.message);
+            setShowDeleteDialog(false);
+            setRefresh((r) => r + 1);
+          }
+        }}
       />
     </div>
   );

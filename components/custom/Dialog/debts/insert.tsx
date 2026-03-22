@@ -79,7 +79,7 @@ function InsertDebtDialog({ open, setOpen, setRefresh }: Props) {
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Debt Detail</DialogTitle>
+              <DialogTitle>New Debt</DialogTitle>
               <DialogDescription></DialogDescription>
             </DialogHeader>
             <div className="overflow-y-auto max-h-[60vh] px-2 py-4 grid gap-6">

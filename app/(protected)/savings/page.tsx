@@ -55,16 +55,6 @@ function SavingPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pagination.pageIndex, refresh]);
 
-  const handleEdit = (selected: SavingsUpdate) => {
-    setSelected(selected);
-    setShowEditDialog(true);
-  };
-
-  const handleDisable = async (selected: SavingsRow) => {
-    await setSelected(selected);
-    setShowDisableDialog(true);
-  };
-
   const onDisable = async () => {
     setLoading(true);
     const results = await disableSaving({ selected: selected! });
@@ -80,8 +70,14 @@ function SavingPage() {
   };
 
   const savingsColumns = getSavingsColumns({
-    handleEdit: handleEdit,
-    handleDisable: handleDisable,
+    handleEdit: (selected: SavingsUpdate) => {
+      setSelected(selected);
+      setShowEditDialog(true);
+    },
+    handleDisable: async (selected: SavingsRow) => {
+      await setSelected(selected);
+      setShowDisableDialog(true);
+    },
   });
 
   return (

@@ -1,6 +1,6 @@
 "use client"
 
-import { DebtsFormData } from "@/schemas/forms/debts";
+import { DebtsFormData, DebtsSettlementFormData } from "@/schemas/forms/debts";
 import { ReturnType } from "@/types/common";
 import { DebtsRow, DebtsUpdate } from "@/types/debts";
 import { PaginationType } from "@/types/paginations";
@@ -24,9 +24,10 @@ export async function fetchDebts({pagination} : {pagination: PaginationType}): P
 
 export async function insertDebts({formData, userId} : {formData: DebtsFormData, userId?: string}): Promise<ReturnType> {
     if (!userId) return {success: false, message: "User invalid"}
+    const isDeposited = formData.save_to && formData.save_to !== "" ? true : false;
 
     const supabase = await createClient();
-    const {error} = await supabase.from("debts").insert({ ...formData, user_id: userId, remaining_amount: formData.amount, is_deposited: formData.save_to === "" ? false : true, save_to: formData.save_to === "" ? null : formData.save_to}).select();
+    const {error} = await supabase.from("debts").insert({ ...formData, user_id: userId, remaining_amount: formData.amount, is_deposited: isDeposited, save_to: isDeposited ? formData.save_to : null}).select();
 
     if (error) return {success: false, message: error.message}
 
@@ -42,4 +43,34 @@ export async function deleteDebts({selected} : {selected: DebtsUpdate}) : Promis
     if (error) return {success: false, message: "Failed to delete debt data"}
 
     return {success: true, message: "Debt deleted successfully"}
+}
+
+export async function updateDebts({data, selected} : {data: DebtsFormData, selected: DebtsUpdate}): Promise<ReturnType>{
+    if (!selected) return {success: false, message: "No debt selected"}
+
+    const supabase = await createClient();
+    const {error} = await supabase.from("debts").update({
+        ...data,
+        is_deposited: data.save_to && data.save_to !== "" ? true : false,
+    }).eq("id", selected.id!).select();
+
+    if (error) return {success: false, message: "Failed to update debt data"}
+
+    return {success: true, message: "Debt updated"}
+}
+
+export async function settleDebts({data, selected} : {data: DebtsSettlementFormData, selected: DebtsUpdate}) : Promise<ReturnType> {
+    if (!selected) return {success: false, message: "No debt selected"}
+    if (!data.paid_from) return {success: false, message: "Saving account is required for settlement"}
+
+    const supabase= await createClient();
+    const {error} = await supabase.rpc("settle_debt", {
+        p_debt_id: selected.id!,
+        p_amount: data.amount,
+        p_saving_id: data.paid_from,        
+    });
+    
+    if (error) return {success: false, message: error.message};
+
+    return {success: true, message: "Debt settled successfully"};
 }

@@ -36,8 +36,9 @@ export async function insertSaving({user_id, formData} : {user_id:string, formDa
     const supabase = await createClient();
 
     const {error} = await supabase.from("user_savings").insert({
-        user_id: user_id,
         ...formData,
+        user_id: user_id,
+        is_default: false,
     }).select();
 
     if (error) return {success: false, message: "Failed to create new saving account"}

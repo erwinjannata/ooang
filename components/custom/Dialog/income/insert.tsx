@@ -77,7 +77,7 @@ function InsertIncomeDialog({ open, setOpen, setRefresh }: Props) {
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Income Detail</DialogTitle>
+              <DialogTitle>New Income</DialogTitle>
               <DialogDescription></DialogDescription>
             </DialogHeader>
             <div className="overflow-y-auto max-h-[60vh] px-2 py-4 grid gap-6">
