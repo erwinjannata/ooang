@@ -1,14 +1,14 @@
 export const expenseBadge = {
     essential: {
-        variant: "default",
+        variant: "ghost",
         className: "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300"
     },
     "non essential": {
-        variant: "default",
-        className: "bg-black/60",
+        variant: "ghost",
+        className: "bg-yellow-100 text-black dark:bg-yellow-950 dark:text-yellow-300",
     },
     cultural: {
-        variant: "default",
+        variant: "ghost",
         className: "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300",
     },
     unexpected: {

@@ -46,27 +46,27 @@ export function getSavingsColumns({
             </CardContent>
             <CardFooter className="justify-between gap-3 max-sm:flex-col max-sm:items-stretch">
               <div className="flex items-center gap-3">
-                <div className="flex flex-col gap-2.5">
+                <div className="flex flex-col gap-2">
+                  <CardTitle className="flex items-center gap-1 text-md">
+                    {saving.name}
+                  </CardTitle>
                   <CardDescription className="uppercase">
                     {saving.is_active ? (
                       <Badge
-                        variant="default"
-                        className="bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300"
+                        variant="ghost"
+                        className="rounded-sm bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300"
                       >
                         Active
                       </Badge>
                     ) : (
                       <Badge
                         variant="destructive"
-                        className="bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300"
+                        className="rounded-sm bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300"
                       >
                         Inactive
                       </Badge>
                     )}
                   </CardDescription>
-                  <CardTitle className="flex items-center gap-1 text-md">
-                    {saving.name}
-                  </CardTitle>
                 </div>
               </div>
               <div className="flex items-center gap-1 justify-end">

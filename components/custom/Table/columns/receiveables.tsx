@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { toLocDate } from "@/hooks/toLocDate";
 import { receiveableBadge } from "@/lib/constants/receiveableBadge";
+import { cn } from "@/lib/utils";
 import { ReceiveableRow, ReceiveableUpdate } from "@/types/receiveables";
 import { ColumnDef } from "@tanstack/react-table";
 import { Eraser, MoreHorizontal, PenLine, SquareCheckBig } from "lucide-react";
@@ -96,19 +97,22 @@ export function getReceiveablesColumn({
             <CardFooter className="justify-between gap-3 max-sm:flex-col max-sm:items-stretch">
               <div className="flex items-center gap-3 justify-between w-full">
                 <div className="flex flex-row justify-between w-full">
-                  <div className="flex flex-col gap-2.5">
-                    <CardDescription className="uppercase">
-                      <Badge variant={variant} className={className}>
-                        {receiveable.status}
-                      </Badge>
-                    </CardDescription>
+                  <div className="flex flex-col gap-2">
                     <CardTitle className="flex items-center gap-1 text-md">
                       {receiveable.title}
                     </CardTitle>
+                    <CardDescription className="uppercase">
+                      <Badge
+                        variant={variant}
+                        className={cn("rounded-sm", className)}
+                      >
+                        {receiveable.status}
+                      </Badge>
+                    </CardDescription>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="flex flex-col gap-2.5 justify-end items-end">
+                  <div className="flex flex-col gap-2 justify-end items-end">
                     <CardTitle className="flex gap-1 text-md">
                       {receiveable.saving_spent?.name}
                     </CardTitle>

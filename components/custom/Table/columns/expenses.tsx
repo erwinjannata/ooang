@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { toLocDate } from "@/hooks/toLocDate";
 import { expenseBadge } from "@/lib/constants/expenseBadge";
+import { cn } from "@/lib/utils";
 import { ExpensesRow, ExpensesUpdate } from "@/types/expenses";
 import { ColumnDef } from "@tanstack/react-table";
 import { Eraser, MoreHorizontal, PenLine } from "lucide-react";
@@ -81,14 +82,19 @@ export function getExpensesColumn({
               <div className="flex items-center gap-3 justify-between w-full">
                 <div className="flex flex-row justify-between w-full">
                   <div className="flex flex-col gap-2.5">
+                    <CardTitle className="flex items-center gap-1 text-md">
+                      <p className="truncate w-40 md:w-full uppercase">
+                        {expense.title}
+                      </p>
+                    </CardTitle>
                     <CardDescription className="uppercase">
-                      <Badge variant={variant} className={className}>
+                      <Badge
+                        variant={variant}
+                        className={cn("rounded-sm", className)}
+                      >
                         {expense.category}
                       </Badge>
                     </CardDescription>
-                    <CardTitle className="flex items-center gap-1 text-md">
-                      <p className="truncate w-40 md:w-full">{expense.title}</p>
-                    </CardTitle>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
