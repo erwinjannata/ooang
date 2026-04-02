@@ -27,9 +27,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Save, X } from "lucide-react";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import CurrencyInput from "../../Input/CurrencyInput";
 import CustomSelect from "../../Select/select";
-import { toast } from "sonner";
 
 type Props = {
   selected: DebtsUpdate;
@@ -100,7 +100,7 @@ function SettleDebtDialog({ selected, open, setOpen, setRefresh }: Props) {
                 name="paid_from"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Spent From</FormLabel>
+                    <FormLabel>Spent from</FormLabel>
                     <FormControl>
                       <CustomSelect
                         {...field}

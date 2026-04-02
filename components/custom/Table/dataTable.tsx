@@ -84,7 +84,7 @@ function DataTable<TData, TValue>({
           </InputGroupAddon>
         </InputGroup>
       </div>
-      <div className="overflow-auto max-h-110">
+      <div className="overflow-auto max-h-[510px] md:max-h-[450px]">
         <Table>
           <TableBody>
             {table.getRowModel().rows?.length ? (

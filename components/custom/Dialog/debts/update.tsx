@@ -118,7 +118,7 @@ function UpdateDebtDialog({ selected, open, setOpen, setRefresh }: Props) {
                 name="save_to"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Saving</FormLabel>
+                    <FormLabel>Deposit to</FormLabel>
                     <FormControl>
                       <CustomSelect
                         {...field}

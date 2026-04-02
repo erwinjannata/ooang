@@ -3,7 +3,6 @@
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -26,11 +25,9 @@ import { NavLinks } from "@/lib/constants/navItems";
 import { UserProfile } from "@/types/user";
 import { User } from "@supabase/supabase-js";
 import {
-  Bell,
   ChevronsUpDown,
   CircleUserRound,
   Coins,
-  KeyRound,
   LogOut,
   UserRound,
 } from "lucide-react";
@@ -146,17 +143,6 @@ export function AppSidebar({
                     </div>
                   </div>
                 </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuGroup>
-                  <DropdownMenuItem>
-                    <KeyRound />
-                    Manage Password
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <Bell />
-                    Notifications
-                  </DropdownMenuItem>
-                </DropdownMenuGroup>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem variant="destructive" onClick={logout}>
                   <LogOut />

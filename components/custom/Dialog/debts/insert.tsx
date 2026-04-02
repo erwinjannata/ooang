@@ -38,7 +38,6 @@ type Props = {
 const defaults = {
   title: "",
   amount: undefined,
-  is_deposited: false,
   save_to: "",
   description: "",
 };
@@ -122,7 +121,7 @@ function InsertDebtDialog({ open, setOpen, setRefresh }: Props) {
                 name="save_to"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Saving</FormLabel>
+                    <FormLabel>Deposit to</FormLabel>
                     <FormControl>
                       <CustomSelect
                         {...field}

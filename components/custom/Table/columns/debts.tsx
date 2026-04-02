@@ -96,23 +96,29 @@ export function getDebtsColumn({
                     <CardTitle className="flex items-center gap-1 text-md">
                       <p className="truncate w-40 md:w-full">{debt.title}</p>
                     </CardTitle>
-                    <CardDescription className="uppercase">
-                      <Badge
-                        variant={variant}
-                        className={cn("rounded-sm", className)}
-                      >
-                        {debt.status}
-                      </Badge>
+                    <CardDescription>
+                      {debt.paid_from ? (
+                        <span>{debt.spentSaving?.name}</span>
+                      ) : (
+                        "-"
+                      )}
                     </CardDescription>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="flex flex-col gap-2 justify-end items-end">
-                    <CardTitle className="flex gap-1 text-md">
-                      {debt.spentSaving?.name || "-"}
-                    </CardTitle>
+                    <CardDescription>
+                      <Badge
+                        variant={variant}
+                        className={cn("rounded-sm uppercase", className)}
+                      >
+                        {debt.status}
+                      </Badge>
+                    </CardDescription>
                     <CardDescription className="capitalize">
-                      {toLocDate(debt.created_at)}
+                      {debt.status === "paid"
+                        ? toLocDate(debt.paid_date!)
+                        : toLocDate(debt.created_at)}
                     </CardDescription>
                   </div>
                 </div>

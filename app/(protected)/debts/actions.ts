@@ -52,6 +52,7 @@ export async function updateDebts({data, selected} : {data: DebtsFormData, selec
     const {error} = await supabase.from("debts").update({
         ...data,
         is_deposited: data.save_to && data.save_to !== "" ? true : false,
+        save_to: data.save_to && data.save_to !== "" ? data.save_to : null,
     }).eq("id", selected.id!).select();
 
     if (error) return {success: false, message: "Failed to update debt data"}

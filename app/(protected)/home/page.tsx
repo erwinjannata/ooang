@@ -1,18 +1,29 @@
 "use client";
 
 import { ExpenseTypeChart } from "@/components/custom/Charts/expenseChart";
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { useSavings } from "@/hooks/useSavings";
+import { expenseBadge } from "@/lib/constants/expenseBadge";
 import { cn } from "@/lib/utils";
 import { ExpensesRow } from "@/types/expenses";
 import { IncomeRow } from "@/types/income";
-import { useAuth } from "@/utils/authProvider";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { getCurrentMonthExpenses } from "./actions";
 
 function HomePage() {
-  const { savings } = useAuth();
+  const { savings, loading: savingsLoading } = useSavings();
   const [expenses, setExpenses] = useState<ExpensesRow[]>([]);
   const [incomes, setIncomes] = useState<IncomeRow[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -28,6 +39,15 @@ function HomePage() {
       setLoading(false);
     })();
   }, []);
+
+  // Calculate totals
+  const totalIncome = incomes
+    .map((income) => income.amount)
+    .reduce((a, b) => a + b, 0);
+  const totalExpense = expenses
+    .map((expense) => expense.amount)
+    .reduce((a, b) => a + b, 0);
+  const netflow = totalIncome - totalExpense;
 
   const showedItem = [
     {
@@ -46,35 +66,28 @@ function HomePage() {
       value: new Intl.NumberFormat("id-ID", {
         style: "currency",
         currency: "IDR",
-      }).format(
-        incomes.map((income) => income.amount).reduce((a, b) => a + b, 0),
-      ),
-      textStyle: "text-green-600",
+      }).format(totalIncome),
+      textStyle: "text-green-700",
     },
     {
       title: "This month's total expense",
       value: new Intl.NumberFormat("id-ID", {
         style: "currency",
         currency: "IDR",
-      }).format(
-        expenses.map((expense) => expense.amount).reduce((a, b) => a + b, 0),
-      ),
+      }).format(totalExpense),
       textStyle: "text-red-700",
     },
     {
       title: "Netflow this month",
-      value: new Intl.NumberFormat("id-ID", {
+      value: `${netflow > 0 ? "+" : ""} ${new Intl.NumberFormat("id-ID", {
         style: "currency",
         currency: "IDR",
-      }).format(
-        incomes.map((income) => income.amount).reduce((a, b) => a + b, 0) -
-          expenses.map((expense) => expense.amount).reduce((a, b) => a + b, 0),
-      ),
-      textStyle: "text-red-700",
+      }).format(netflow)}`,
+      textStyle: netflow < 0 ? "text-red-700" : "text-green-700",
     },
   ];
 
-  if (loading)
+  if (loading || savingsLoading)
     return <Spinner className="items-center justify-items-center mx-auto" />;
 
   return (
@@ -94,10 +107,62 @@ function HomePage() {
           </Card>
         ))}
       </div>
-      <div className="flex flex-col md:flex-row gap-4">
-        <div className="mt-4 md:max-w-xs">
-          <ExpenseTypeChart expenses={expenses} />
-        </div>
+      <div className="flex flex-col md:flex-row gap-6 mt-4">
+        {expenses.length > 0 && (
+          <div className="md:max-w-xs">
+            <ExpenseTypeChart expenses={expenses} />
+          </div>
+        )}
+        <Card className="w-full me-2">
+          <CardContent>
+            <div className="overflow-auto max-h-[300px]">
+              <Table>
+                <TableCaption className="italic">Recent expenses</TableCaption>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Title</TableHead>
+                    <TableHead>Amount</TableHead>
+                    <TableHead>Category</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {expenses
+                    .map((expense) => {
+                      const { variant, className } =
+                        expenseBadge[
+                          expense.category as keyof typeof expenseBadge
+                        ];
+
+                      return (
+                        <TableRow key={expense.id}>
+                          <TableCell>
+                            <p className="truncate w-25 md:w-full font-medium">
+                              {expense.title}
+                            </p>
+                          </TableCell>
+                          <TableCell>
+                            {new Intl.NumberFormat("id-ID", {
+                              style: "currency",
+                              currency: "IDR",
+                            }).format(expense.amount)}
+                          </TableCell>
+                          <TableCell>
+                            <Badge
+                              variant={variant}
+                              className={cn("rounded-sm uppercase", className)}
+                            >
+                              {expense.category}
+                            </Badge>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })
+                    .slice(0, 5)}
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

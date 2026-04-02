@@ -17,19 +17,19 @@ export const description = "A pie chart with a custom label";
 const chartConfig = {
   essential: {
     label: "Essential",
-    color: "var(--chart-1)",
+    color: "var(--chart-3)",
   },
   "non essential": {
     label: "Non-Essential",
-    color: "var(--chart-2)",
+    color: "var(--chart-5)",
   },
   unexpected: {
     label: "Unexpected",
-    color: "var(--chart-3)",
+    color: "var(--chart-1)",
   },
   cultural: {
     label: "Cultural",
-    color: "var(--chart-4)",
+    color: "var(--chart-2)",
   },
 } satisfies ChartConfig;
 
@@ -63,8 +63,8 @@ export function ExpenseTypeChart({ expenses }: ExpenseTypeChartProps) {
 
   return (
     <Card>
-      <CardHeader className="items-center pb-0">
-        <CardTitle>Expenses by category</CardTitle>
+      <CardHeader className="flex flex-row justify-between pb-0">
+        <CardTitle>Expenses Trend</CardTitle>
         <CardDescription>
           {currentMonth} {currentYear}
         </CardDescription>
@@ -73,17 +73,14 @@ export function ExpenseTypeChart({ expenses }: ExpenseTypeChartProps) {
       <CardContent className="flex justify-center">
         <ChartContainer
           config={chartConfig}
-          className="mx-auto aspect-square w-100 h-100 max-h-[250px] pb-0 [&_.recharts-pie-label-text]:fill-foreground"
+          className="mx-auto aspect-square w-80 h-80 max-h-[250px] pb-0 [&_.recharts-pie-label-text]:fill-foreground"
         >
-          <PieChart width={300} height={300}>
+          <PieChart width={80} height={80}>
             <Pie
               data={categoryTotals}
               dataKey="value"
               nameKey="name"
-              outerRadius={100}
-              //   label={({ name, value }) =>
-              //     `${chartConfig[name as keyof typeof chartConfig]?.label}: Rp ${value.toLocaleString()}`
-              //   }
+              outerRadius={80}
             >
               {categoryTotals.map((entry, index) => (
                 <Cell

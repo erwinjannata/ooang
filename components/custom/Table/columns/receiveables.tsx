@@ -101,20 +101,20 @@ export function getReceiveablesColumn({
                     <CardTitle className="flex items-center gap-1 text-md">
                       {receiveable.title}
                     </CardTitle>
-                    <CardDescription className="uppercase">
-                      <Badge
-                        variant={variant}
-                        className={cn("rounded-sm", className)}
-                      >
-                        {receiveable.status}
-                      </Badge>
+                    <CardDescription>
+                      {receiveable.saving_spent?.name}
                     </CardDescription>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="flex flex-col gap-2 justify-end items-end">
                     <CardTitle className="flex gap-1 text-md">
-                      {receiveable.saving_spent?.name}
+                      <Badge
+                        variant={variant}
+                        className={cn("rounded-sm uppercase", className)}
+                      >
+                        {receiveable.status}
+                      </Badge>
                     </CardTitle>
                     <CardDescription className="capitalize">
                       {toLocDate(receiveable.created_at)}

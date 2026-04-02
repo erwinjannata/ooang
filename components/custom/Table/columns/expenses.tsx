@@ -81,12 +81,15 @@ export function getExpensesColumn({
             <CardFooter className="justify-between gap-3 max-sm:flex-col max-sm:items-stretch">
               <div className="flex items-center gap-3 justify-between w-full">
                 <div className="flex flex-row justify-between w-full">
-                  <div className="flex flex-col gap-2.5">
+                  <div className="flex flex-col gap-1">
                     <CardTitle className="flex items-center gap-1 text-md">
-                      <p className="truncate w-40 md:w-full uppercase">
-                        {expense.title}
-                      </p>
+                      <p className="truncate w-40 md:w-full">{expense.title}</p>
                     </CardTitle>
+                    <CardDescription>{expense.saving?.name}</CardDescription>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="flex flex-col gap-1 justify-end items-end">
                     <CardDescription className="uppercase">
                       <Badge
                         variant={variant}
@@ -95,13 +98,6 @@ export function getExpensesColumn({
                         {expense.category}
                       </Badge>
                     </CardDescription>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="flex flex-col gap-2.5 justify-end items-end">
-                    <CardTitle className="flex gap-1 text-md">
-                      {expense.saving?.name}
-                    </CardTitle>
                     <CardDescription className="capitalize">
                       {toLocDate(expense.created_at)}
                     </CardDescription>

@@ -5,7 +5,6 @@ import {
   CardContent,
   CardDescription,
   CardFooter,
-  CardTitle,
 } from "@/components/ui/card";
 import {
   DropdownMenu,
@@ -37,39 +36,13 @@ export function getSavingsColumns({
         return (
           <Card className="w-full border-none shadow-md hover:bg-neutral-200 hover:shadow-neutral-100">
             <CardContent>
-              <span className="font-medium text-xl">
-                {new Intl.NumberFormat("id-ID", {
-                  style: "currency",
-                  currency: "IDR",
-                }).format(parseFloat(saving.balance?.toString() || "0"))}
-              </span>
-            </CardContent>
-            <CardFooter className="justify-between gap-3 max-sm:flex-col max-sm:items-stretch">
-              <div className="flex items-center gap-3">
-                <div className="flex flex-col gap-2">
-                  <CardTitle className="flex items-center gap-1 text-md">
-                    {saving.name}
-                  </CardTitle>
-                  <CardDescription className="uppercase">
-                    {saving.is_active ? (
-                      <Badge
-                        variant="ghost"
-                        className="rounded-sm bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300"
-                      >
-                        Active
-                      </Badge>
-                    ) : (
-                      <Badge
-                        variant="destructive"
-                        className="rounded-sm bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300"
-                      >
-                        Inactive
-                      </Badge>
-                    )}
-                  </CardDescription>
-                </div>
-              </div>
-              <div className="flex items-center gap-1 justify-end">
+              <div className="flex flex-row gap-2 justify-between">
+                <span className="font-medium text-xl">
+                  {new Intl.NumberFormat("id-ID", {
+                    style: "currency",
+                    currency: "IDR",
+                  }).format(parseFloat(saving.balance?.toString() || "0"))}
+                </span>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
@@ -98,6 +71,36 @@ export function getSavingsColumns({
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
+              </div>
+            </CardContent>
+            <CardFooter>
+              <div className="flex flex-row gap-2 justify-between w-full">
+                <CardDescription className="text-md">
+                  {saving.name}
+                </CardDescription>
+                <CardDescription className="flex gap-2">
+                  <Badge
+                    variant={saving.type === "card" ? "default" : "outline"}
+                    className="uppercase rounded-sm"
+                  >
+                    {saving.type}
+                  </Badge>
+                  {saving.is_active ? (
+                    <Badge
+                      variant="ghost"
+                      className="uppercase rounded-sm bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300"
+                    >
+                      Active
+                    </Badge>
+                  ) : (
+                    <Badge
+                      variant="destructive"
+                      className="uppercase rounded-sm bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300"
+                    >
+                      Inactive
+                    </Badge>
+                  )}
+                </CardDescription>
               </div>
             </CardFooter>
           </Card>

@@ -74,7 +74,7 @@ export function getIncomeColumn({
               </div>
             </CardContent>
             <CardFooter className="justify-between gap-3 max-sm:flex-col max-sm:items-stretch">
-              <div className="flex items-center gap-3 justify-between w-full">
+              <div className="flex items-end gap-3 justify-between w-full">
                 <div className="flex flex-row justify-between w-full">
                   <div className="flex flex-col gap-0.5">
                     <CardTitle className="flex items-center gap-1 text-md">
@@ -86,7 +86,7 @@ export function getIncomeColumn({
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="flex flex-col gap-0.5 justify-end items-end">
+                  <div className="flex justify-end items-end">
                     <CardTitle className="flex gap-1 text-md"></CardTitle>
                     <CardDescription className="capitalize">
                       {toLocDate(income.created_at)}
