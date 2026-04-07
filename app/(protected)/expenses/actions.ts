@@ -1,5 +1,6 @@
 'use client'
 
+import { EnumCategory } from "@/lib/enums/expenseCategoryFilter";
 import { ExpensesFormData } from "@/schemas/forms/expenses";
 import { ExpensesRow, ExpensesUpdate } from "@/types/expenses";
 import { PaginationType } from "@/types/paginations";
@@ -13,12 +14,17 @@ type ReturnType = {
     hasPrevPage?: boolean; 
 }
 
-export async function fetchExpenses({pagination} : {pagination: PaginationType}): Promise<ReturnType>{
+export async function fetchExpenses({pagination, filter} : {pagination: PaginationType, filter: {saving: string, category: "all" & EnumCategory}}): Promise<ReturnType>{
     const supabase = await createClient();
     const from = pagination.pageIndex * pagination.pageSize;
     const to = from + pagination.pageSize
 
-    const {data: expenses, error} = await supabase.from("expenses").select("*, saving:user_savings!spend_from(*)").range(from, to).order("created_at", {ascending: false});
+    let query = supabase.from("expenses").select("*, saving:user_savings!spend_from(*)");
+
+    if (filter.saving !== "all") query = query.eq("spend_from", filter.saving);
+    if (filter.category !== "all") query = query.eq("category", filter.category);
+
+    const {data: expenses, error} = await query.range(from, to).order("created_at", {ascending: false});
 
     if (error) return {success: false, message: error.message}
 

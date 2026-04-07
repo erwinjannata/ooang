@@ -49,6 +49,10 @@ function HomePage() {
     .reduce((a, b) => a + b, 0);
   const netflow = totalIncome - totalExpense;
 
+  const expensiveExpenses = [...expenses]
+    .sort((prev, next) => next.amount - prev.amount)
+    .slice(0, 5);
+
   const showedItem = [
     {
       title: "Total saving balance",
@@ -117,7 +121,9 @@ function HomePage() {
           <CardContent>
             <div className="overflow-auto max-h-[300px]">
               <Table>
-                <TableCaption className="italic">Recent expenses</TableCaption>
+                <TableCaption className="italic">
+                  Most expensive expense this month
+                </TableCaption>
                 <TableHeader>
                   <TableRow>
                     <TableHead>Title</TableHead>
@@ -126,7 +132,7 @@ function HomePage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {expenses
+                  {expensiveExpenses
                     .map((expense) => {
                       const { variant, className } =
                         expenseBadge[

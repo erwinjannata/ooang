@@ -1,0 +1,1 @@
+export type EnumCategory = "essential" | "non essential" | "cultural" | "unexpected";

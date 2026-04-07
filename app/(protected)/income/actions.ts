@@ -6,12 +6,16 @@ import { IncomeRow, IncomeUpdate } from "@/types/income";
 import { PaginationType } from "@/types/paginations";
 import { createClient } from "@/utils/supabase/client";
 
-export async function fetchIncome({pagination} : {pagination : PaginationType}) : Promise<ReturnType & {data?: IncomeRow[]}> {
+export async function fetchIncome({pagination, filter} : {pagination : PaginationType, filter: {saving: string}}) : Promise<ReturnType & {data?: IncomeRow[]}> {
     const supabase = await createClient();
     const from = pagination.pageIndex * pagination.pageSize;
     const to = from + pagination.pageSize
 
-    const {data: income, error} = await supabase.from("income").select("*, saving:user_savings!save_to(*)").range(from, to).order("created_at", {ascending: false});
+    let query = supabase.from("income").select("*, saving:user_savings!save_to(*)");
+
+    if (filter.saving !== "all") query = query.eq("save_to", filter.saving);
+
+    const {data: income, error} = await query.range(from, to).order("created_at", {ascending: false});
 
     if (error) return {success: false, message: error.message}
     

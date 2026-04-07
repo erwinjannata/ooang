@@ -23,7 +23,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { ArrowLeft, ArrowRight, Search } from "lucide-react";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, ReactNode, SetStateAction, useState } from "react";
 
 interface Props<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -32,6 +32,7 @@ interface Props<TData, TValue> {
   setPagination: Dispatch<SetStateAction<PaginationType>>;
   searchColumn: string;
   loading?: boolean;
+  children?: ReactNode;
 }
 
 function DataTable<TData, TValue>({
@@ -41,6 +42,7 @@ function DataTable<TData, TValue>({
   setPagination,
   searchColumn,
   loading,
+  children,
 }: Props<TData, TValue>) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
@@ -55,8 +57,8 @@ function DataTable<TData, TValue>({
   });
 
   return (
-    <div className="rounded-md py-4 px-2">
-      <div className="items-center mb-4 px-2">
+    <div className="grid gap-4">
+      <div className="flex flex-col gap-4 items-center ps-2 pe-1.5 xl:pe-0">
         <InputGroup
           className={cn(
             "w-full bg-white",
@@ -83,6 +85,7 @@ function DataTable<TData, TValue>({
               : ""}
           </InputGroupAddon>
         </InputGroup>
+        {table.getRowModel().rows?.length ? children : null}
       </div>
       <div className="overflow-auto max-h-[510px] md:max-h-[450px]">
         <Table>
