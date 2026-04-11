@@ -5,6 +5,7 @@ import DestructiveAlertDialog from "@/components/custom/Dialog/desctuctiveAlertD
 import InsertReceiveablesDialog from "@/components/custom/Dialog/receiveables/insert";
 import SettleReceiveablesDialog from "@/components/custom/Dialog/receiveables/settlement";
 import UpdateReceiveablesDialog from "@/components/custom/Dialog/receiveables/update";
+import CustomSelect from "@/components/custom/Select/select";
 import { getReceiveablesColumn } from "@/components/custom/Table/columns/receiveables";
 import DataTable from "@/components/custom/Table/dataTable";
 import { Spinner } from "@/components/ui/spinner";
@@ -33,6 +34,9 @@ function ReceiveablesPage() {
   });
   const [refresh, setRefresh] = useState<number>(0);
   const [selected, setSelected] = useState<ReceiveableUpdate | null>(null);
+  const [filter, setFilter] = useState({
+    status: "all",
+  });
 
   useEffect(() => {
     (async () => {
@@ -40,6 +44,7 @@ function ReceiveablesPage() {
       const results = await fetchReceiveables({
         pagination: pagination,
         user_id: profile!.id,
+        filter: filter,
       });
 
       if (!results.success) {
@@ -55,7 +60,7 @@ function ReceiveablesPage() {
       }));
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pagination.pageIndex, refresh]);
+  }, [pagination.pageIndex, refresh, filter]);
 
   const receiveableColumns = getReceiveablesColumn({
     handleSettlement: (selected: ReceiveableUpdate) => {
@@ -84,7 +89,41 @@ function ReceiveablesPage() {
           pagination={pagination}
           setPagination={setPagination}
           loading={loading}
-        />
+        >
+          <CustomSelect
+            label="Status"
+            groups={[
+              {
+                label: "Receivable status",
+                items: [
+                  {
+                    label: "Settled",
+                    value: "settled",
+                  },
+                  {
+                    label: "Partial",
+                    value: "partial",
+                  },
+                  {
+                    label: "Unpaid",
+                    value: "unpaid",
+                  },
+                ],
+              },
+            ]}
+            value={filter.status}
+            onChange={(val) =>
+              setFilter((prev) => ({
+                ...prev,
+                status: typeof val === "string" ? val : val.target.value,
+              }))
+            }
+            disabled={loading}
+            className="bg-white"
+            allowAll
+            allLabel="All Status"
+          />
+        </DataTable>
       )}
 
       <FloatingButton

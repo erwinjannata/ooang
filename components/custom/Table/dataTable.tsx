@@ -62,8 +62,8 @@ function DataTable<TData, TValue>({
         <InputGroup
           className={cn(
             "w-full bg-white",
-            loading && "pointer-events-none opacity-50",
-            data.length === 0 && "pointer-events-none hidden",
+            loading && "pointer-events-none opacity-50 hidden",
+            data.length === 0 && "pointer-events-none",
           )}
         >
           <InputGroupInput
@@ -85,7 +85,14 @@ function DataTable<TData, TValue>({
               : ""}
           </InputGroupAddon>
         </InputGroup>
-        {table.getRowModel().rows?.length ? children : null}
+        <div
+          className={cn(
+            "w-full",
+            loading && "pointer-events-none opacity-50 hidden",
+          )}
+        >
+          {children}
+        </div>
       </div>
       <div className="overflow-auto max-h-[510px] md:max-h-[450px]">
         <Table>

@@ -5,10 +5,12 @@ import InsertDebtDialog from "@/components/custom/Dialog/debts/insert";
 import SettleDebtDialog from "@/components/custom/Dialog/debts/settlement";
 import UpdateDebtDialog from "@/components/custom/Dialog/debts/update";
 import DestructiveAlertDialog from "@/components/custom/Dialog/desctuctiveAlertDialog";
+import CustomSelect from "@/components/custom/Select/select";
 import { getDebtsColumn } from "@/components/custom/Table/columns/debts";
 import DataTable from "@/components/custom/Table/dataTable";
 import { Spinner } from "@/components/ui/spinner";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { EnumDebtFilter } from "@/lib/enums/debtsStatusFilter";
 import { DebtsRow, DebtsUpdate } from "@/types/debts";
 import { PaginationType } from "@/types/paginations";
 import { Plus } from "lucide-react";
@@ -31,11 +33,17 @@ function DebtsPage() {
   });
   const [refresh, setRefresh] = useState<number>(0);
   const [selected, setSelected] = useState<DebtsUpdate | null>(null);
+  const [filter, setFilter] = useState({
+    status: "all" as "all" & EnumDebtFilter,
+  });
 
   useEffect(() => {
     const getData = async () => {
       setLoading(true);
-      const results = await fetchDebts({ pagination: pagination });
+      const results = await fetchDebts({
+        pagination: pagination,
+        filter: filter,
+      });
 
       if (!results.success) {
         toast.error(results.message);
@@ -52,7 +60,7 @@ function DebtsPage() {
 
     getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pagination.pageIndex, refresh]);
+  }, [pagination.pageIndex, refresh, filter]);
 
   const columns = getDebtsColumn({
     handleSettlement: async (selected: DebtsUpdate) => {
@@ -81,7 +89,41 @@ function DebtsPage() {
           pagination={pagination}
           setPagination={setPagination}
           loading={loading}
-        />
+        >
+          <CustomSelect
+            label="Status"
+            groups={[
+              {
+                label: "Debt status",
+                items: [
+                  {
+                    label: "Paid",
+                    value: "paid",
+                  },
+                  {
+                    label: "Partial",
+                    value: "partial",
+                  },
+                  {
+                    label: "Unpaid",
+                    value: "unpaid",
+                  },
+                ],
+              },
+            ]}
+            value={filter.status}
+            onChange={(val) =>
+              setFilter((prev) => ({
+                ...prev,
+                status: val as "all" & EnumDebtFilter,
+              }))
+            }
+            disabled={loading}
+            className="bg-white"
+            allowAll
+            allLabel="All Status"
+          />
+        </DataTable>
       )}
 
       <FloatingButton

@@ -1,0 +1,1 @@
+export type EnumDebtFilter = "unpaid" | "partial" | "paid";

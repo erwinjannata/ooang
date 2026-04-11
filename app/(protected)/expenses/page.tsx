@@ -90,7 +90,7 @@ function ExpensesPage() {
           setPagination={setPagination}
           loading={loading}
         >
-          <div className="flex flex-row gap-2 w-full">
+          <div className="flex flex-row gap-2">
             <CustomSelect
               label="Saving"
               groups={[

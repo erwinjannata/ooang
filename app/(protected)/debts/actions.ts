@@ -1,17 +1,22 @@
 "use client"
 
+import { EnumDebtFilter } from "@/lib/enums/debtsStatusFilter";
 import { DebtsFormData, DebtsSettlementFormData } from "@/schemas/forms/debts";
 import { ReturnType } from "@/types/common";
 import { DebtsRow, DebtsUpdate } from "@/types/debts";
 import { PaginationType } from "@/types/paginations";
 import { createClient } from "@/utils/supabase/client";
 
-export async function fetchDebts({pagination} : {pagination: PaginationType}): Promise<ReturnType & {data?: DebtsRow[]}>{
+export async function fetchDebts({pagination, filter} : {pagination: PaginationType, filter: {status: "all" & EnumDebtFilter}}): Promise<ReturnType & {data?: DebtsRow[]}>{
     const supabase = await createClient();
     const from = pagination.pageIndex * pagination.pageSize;
     const to = from + pagination.pageSize
 
-    const {data: debts, error} = await supabase.from("debts").select("*, depositSaving:user_savings!save_to(*), spentSaving:user_savings!paid_from(*)").range(from, to).order("created_at", {ascending: false});
+    let query = supabase.from("debts").select("*, depositSaving:user_savings!save_to(*), spentSaving:user_savings!paid_from(*)")
+
+    if (filter.status !== "all") query = query.eq("status", filter.status);
+
+    const {data: debts, error} = await query.range(from, to).order("created_at", {ascending: false});
 
     if (error) return {success: false, message: error.message}
 

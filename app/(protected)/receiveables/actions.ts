@@ -8,17 +8,21 @@ import { createClient } from "@/utils/supabase/client";
 
 type ReceiveableReturn = ReturnType & {data?: ReceiveableRow[]};
 
-export async function fetchReceiveables({pagination, user_id} : {pagination: PaginationType, user_id: string}): Promise<ReceiveableReturn>{
+export async function fetchReceiveables({pagination, user_id, filter} : {pagination: PaginationType, user_id: string, filter: {status: string}}): Promise<ReceiveableReturn>{
     if (!user_id) return {success: false, message: "User not found"} 
     
         const supabase = await createClient();
         const from = pagination.pageIndex * pagination.pageSize;
         const to = from + pagination.pageSize
-    
-        const {data: receiveables, error} = await supabase.from("receiveables")
+
+        let query = supabase.from("receiveables")
             .select("*, saving_spent:user_savings!spend_from(*), saving_to:user_savings!save_to(*)")
             .range(from, to)
             .eq("user_id", user_id)
+
+        if (filter.status !== "all") query = query.eq("status", filter.status);
+    
+        const {data: receiveables, error} = await query
             .order("created_at", {ascending: false});
     
         if (error) return {success: false, message: error.message}
