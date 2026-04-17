@@ -19,7 +19,14 @@ import { receiveableBadge } from "@/lib/constants/receiveableBadge";
 import { cn } from "@/lib/utils";
 import { ReceiveableRow, ReceiveableUpdate } from "@/types/receiveables";
 import { ColumnDef } from "@tanstack/react-table";
-import { Eraser, MoreHorizontal, PenLine, SquareCheckBig } from "lucide-react";
+import {
+  Calendar,
+  Eraser,
+  MoreHorizontal,
+  PenLine,
+  SquareCheckBig,
+  Wallet,
+} from "lucide-react";
 
 type Props = {
   handleSettlement: (selected: ReceiveableUpdate) => void;
@@ -102,7 +109,10 @@ export function getReceiveablesColumn({
                       {receiveable.title}
                     </CardTitle>
                     <CardDescription>
-                      {receiveable.saving_spent?.name}
+                      <span className="flex flex-row items-center gap-2">
+                        <Wallet className="w-3 h-3" />
+                        {receiveable.saving_spent?.name}
+                      </span>
                     </CardDescription>
                   </div>
                 </div>
@@ -117,7 +127,10 @@ export function getReceiveablesColumn({
                       </Badge>
                     </CardTitle>
                     <CardDescription className="capitalize">
-                      {toLocDate(receiveable.created_at)}
+                      <span className="flex flex-row gap-2 items-center">
+                        <Calendar className="w-3 h-3" />
+                        {toLocDate(receiveable.created_at)}
+                      </span>
                     </CardDescription>
                   </div>
                 </div>

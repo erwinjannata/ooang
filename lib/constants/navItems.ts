@@ -13,6 +13,6 @@ export const NavLinks : NavItems[] = [
   {title: "Incomes", url: "/income", icon: BanknoteArrowDown, isActive: false},
   {title: "Savings", url: "/savings", icon: PiggyBank, isActive: false},
   {title: "Debts", url: "/debts", icon: Handshake, isActive: false},
-  {title: "Receiveables", url: "/receiveables", icon: HandCoins, isActive: false},
+  {title: "Receivables", url: "/receivables", icon: HandCoins, isActive: false},
   {title: "Financial Reports", url: "/reports", icon: ChartNoAxesCombined, isActive: false},
 ];

@@ -31,7 +31,7 @@ export async function fetchReceiveables({pagination, user_id, filter} : {paginat
         const hasPrevPage:boolean = pagination.pageIndex > 0;
         const rows:ReceiveableRow[] = hasNextPage ? receiveables.slice(0, pagination.pageSize) : receiveables
     
-        return {success: true, message: "Receiveables retrieved", data: rows, hasNextPage: hasNextPage, hasPrevPage: hasPrevPage}
+        return {success: true, message: "Receivables retrieved", data: rows, hasNextPage: hasNextPage, hasPrevPage: hasPrevPage}
 }
 
 export async function insertReceivable({user_id, formData} : {user_id: string, formData: ReceiveablesFormData}) : Promise<ReturnType> {
@@ -45,9 +45,9 @@ export async function insertReceivable({user_id, formData} : {user_id: string, f
         remaining_amount: formData.amount
     }).select();
 
-    if (error) return {success: false, message: "Failed to insert new receiveable data"}
+    if (error) return {success: false, message: "Failed to insert new receivable data"}
 
-    return {success: true, message: "Receiveable inserted successfully"}
+    return {success: true, message: "Receivable inserted successfully"}
 }
 
 export async function updateReceivable({selected, formData} : {selected: ReceiveableUpdate, formData: ReceiveablesFormData}) : Promise<ReturnType> {
@@ -58,9 +58,9 @@ export async function updateReceivable({selected, formData} : {selected: Receive
         ...formData,
     }).eq("id", selected.id!).select();
 
-    if (error) return {success: false, message: "Failed to update receiveable data"}
+    if (error) return {success: false, message: "Failed to update receivable data"}
 
-    return {success: true, message: "Receiveable updated successfully"}
+    return {success: true, message: "Receivable updated successfully"}
 }
 
 export async function deleteReceiveable({selected} : {selected: ReceiveableUpdate}) : Promise<ReturnType> {
@@ -69,9 +69,9 @@ export async function deleteReceiveable({selected} : {selected: ReceiveableUpdat
     const supabase = await createClient();
     const {error} = await supabase.from("receiveables").delete().eq("id", selected.id!);
 
-    if (error) return {success: false, message: "Failed to delete receiveable data"}
+    if (error) return {success: false, message: "Failed to delete receivable data"}
 
-    return {success: true, message: "Receiveable deleted successfully"}
+    return {success: true, message: "Receivable deleted successfully"}
 }
 
 export async function settleReceiveable({selected, amount, saving} : {selected: ReceiveableUpdate, amount: number, saving: string}) : Promise<ReturnType> {
@@ -86,5 +86,5 @@ export async function settleReceiveable({selected, amount, saving} : {selected: 
 
     if (error) return {success: false, message: error.message}
 
-    return {success: true, message: "Data piutang berhasil diupdate"}
+    return {success: true, message: "Receivables updated succesfully"}
 }

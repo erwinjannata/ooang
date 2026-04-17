@@ -1,6 +1,6 @@
 "use client";
 
-import { insertReceivable } from "@/app/(protected)/receiveables/actions";
+import { insertReceivable } from "@/app/(protected)/receivables/actions";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -81,7 +81,7 @@ function InsertReceiveablesDialog({ open, setOpen, setRefresh }: Props) {
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>New Receievable</DialogTitle>
+              <DialogTitle>New Receivable</DialogTitle>
               <DialogDescription></DialogDescription>
             </DialogHeader>
             <div className="grid gap-6 p-4">
@@ -120,7 +120,7 @@ function InsertReceiveablesDialog({ open, setOpen, setRefresh }: Props) {
                 name="spend_from"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Saving</FormLabel>
+                    <FormLabel>Spent from</FormLabel>
                     <FormControl>
                       <CustomSelect
                         {...field}
@@ -151,7 +151,7 @@ function InsertReceiveablesDialog({ open, setOpen, setRefresh }: Props) {
                     <FormControl>
                       <Textarea
                         {...field}
-                        placeholder="Saving description here..."
+                        placeholder="Enter description here..."
                         value={field.value || ""}
                         disabled={loading}
                         {...form.register("description")}

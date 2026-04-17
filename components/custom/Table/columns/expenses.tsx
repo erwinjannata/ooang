@@ -18,7 +18,13 @@ import { expenseBadge } from "@/lib/constants/expenseBadge";
 import { cn } from "@/lib/utils";
 import { ExpensesRow, ExpensesUpdate } from "@/types/expenses";
 import { ColumnDef } from "@tanstack/react-table";
-import { Eraser, MoreHorizontal, PenLine } from "lucide-react";
+import {
+  Calendar,
+  Eraser,
+  MoreHorizontal,
+  PenLine,
+  Wallet,
+} from "lucide-react";
 
 type Props = {
   handleEdit: (selected: ExpensesUpdate) => void;
@@ -83,9 +89,16 @@ export function getExpensesColumn({
                 <div className="flex flex-row justify-between w-full">
                   <div className="flex flex-col gap-1">
                     <CardTitle className="flex items-center gap-1 text-md">
-                      <p className="truncate w-40 md:w-full">{expense.title}</p>
+                      <span className="truncate w-40 md:w-full">
+                        {expense.title}
+                      </span>
                     </CardTitle>
-                    <CardDescription>{expense.saving?.name}</CardDescription>
+                    <CardDescription>
+                      <span className="flex flex-row items-center gap-2">
+                        <Wallet className="w-3 h-3" />
+                        {expense.saving?.name}
+                      </span>
+                    </CardDescription>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
@@ -99,7 +112,10 @@ export function getExpensesColumn({
                       </Badge>
                     </CardDescription>
                     <CardDescription className="capitalize">
-                      {toLocDate(expense.created_at)}
+                      <span className="flex flex-row gap-2 items-center">
+                        <Calendar className="w-3 h-3" />
+                        {toLocDate(expense.created_at)}
+                      </span>
                     </CardDescription>
                   </div>
                 </div>

@@ -20,7 +20,7 @@ import { ExpensesRow } from "@/types/expenses";
 import { IncomeRow } from "@/types/income";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { getCurrentMonthExpenses } from "./actions";
+import { getPeriodicActivity } from "./actions";
 
 function HomePage() {
   const { savings, loading: savingsLoading } = useSavings();
@@ -31,7 +31,18 @@ function HomePage() {
   useEffect(() => {
     (async () => {
       setLoading(true);
-      const results = await getCurrentMonthExpenses();
+      const now = new Date();
+      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+      const startOfNextMonth = new Date(
+        now.getFullYear(),
+        now.getMonth() + 1,
+        1,
+      );
+
+      const results = await getPeriodicActivity({
+        startPeriod: startOfMonth,
+        endPeriod: startOfNextMonth,
+      });
 
       if (!results.success) toast.error(results.message);
       setExpenses(results.expenses || []);
@@ -95,13 +106,10 @@ function HomePage() {
     return <Spinner className="items-center justify-items-center mx-auto" />;
 
   return (
-    <div>
+    <div className="grid gap-4">
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 justify-center items-center">
         {showedItem.map((item) => (
-          <Card
-            className="w-full md:max-w-xs border-0 shadow-md"
-            key={item.title}
-          >
+          <Card className="w-full border-0 shadow-md" key={item.title}>
             <CardContent className="flex flex-col gap-1">
               <p className="text-muted-foreground text-xs">{item.title}</p>
               <h1 className="scroll-m-20 text-xl lg:text-xl font-bold tracking-tight text-balance">
@@ -111,13 +119,13 @@ function HomePage() {
           </Card>
         ))}
       </div>
-      <div className="flex flex-col md:flex-row gap-6 mt-4">
+      <div className="flex flex-col md:flex-row gap-4">
         {expenses.length > 0 && (
           <div className="md:max-w-xs">
             <ExpenseTypeChart expenses={expenses} />
           </div>
         )}
-        <Card className="w-full me-2">
+        <Card className="w-full">
           <CardContent>
             <div className="overflow-auto max-h-[300px]">
               <Table>
@@ -125,7 +133,7 @@ function HomePage() {
                   Most expensive expense this month
                 </TableCaption>
                 <TableHeader>
-                  <TableRow>
+                  <TableRow className="uppercase">
                     <TableHead>Title</TableHead>
                     <TableHead>Amount</TableHead>
                     <TableHead>Category</TableHead>

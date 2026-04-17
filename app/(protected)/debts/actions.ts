@@ -24,7 +24,7 @@ export async function fetchDebts({pagination, filter} : {pagination: PaginationT
     const hasPrevPage:boolean = pagination.pageIndex > 0;
     const rows: DebtsRow[] = hasNextPage ? debts.slice(0, pagination.pageSize) : debts
 
-    return {success: true, message: "Expenses retrieved", data: rows, hasNextPage: hasNextPage, hasPrevPage: hasPrevPage}
+    return {success: true, message: "Debts retrieved", data: rows, hasNextPage: hasNextPage, hasPrevPage: hasPrevPage}
 }
 
 export async function insertDebts({formData, userId} : {formData: DebtsFormData, userId?: string}): Promise<ReturnType> {

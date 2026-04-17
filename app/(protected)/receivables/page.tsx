@@ -130,7 +130,7 @@ function ReceiveablesPage() {
         size={useIsMobile() ? "icon-lg" : "lg"}
         onClick={() => setShowInsertDialog(true)}
       >
-        <Plus className="w-10 h-10" /> {!useIsMobile() && "New Receiveable"}
+        <Plus className="w-10 h-10" /> {!useIsMobile() && "New Receivable"}
       </FloatingButton>
       <InsertReceiveablesDialog
         open={showInsertDialog}
@@ -152,7 +152,7 @@ function ReceiveablesPage() {
       <DestructiveAlertDialog
         open={showDeleteDialog}
         onOpen={setShowDeleteDialog}
-        title="Remove Receiveable record?"
+        title="Remove Receivable record?"
         onAction={async () => {
           setLoading(true);
           const results = await deleteReceiveable({ selected: selected! });

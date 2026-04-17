@@ -1,6 +1,6 @@
 "use client";
 
-import { settleReceiveable } from "@/app/(protected)/receiveables/actions";
+import { settleReceiveable } from "@/app/(protected)/receivables/actions";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -90,7 +90,7 @@ function SettleReceiveablesDialog({
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Receiveable Settlement</DialogTitle>
+              <DialogTitle>Receivable Settlement</DialogTitle>
               <DialogDescription></DialogDescription>
             </DialogHeader>
             <div className="grid gap-6 p-4">
@@ -112,7 +112,7 @@ function SettleReceiveablesDialog({
                 name="save_to"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Spent From</FormLabel>
+                    <FormLabel>Save to</FormLabel>
                     <FormControl>
                       <CustomSelect
                         {...field}

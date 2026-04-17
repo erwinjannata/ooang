@@ -19,7 +19,14 @@ import { receiveableBadge } from "@/lib/constants/receiveableBadge";
 import { cn } from "@/lib/utils";
 import { DebtsRow, DebtsUpdate } from "@/types/debts";
 import { ColumnDef } from "@tanstack/react-table";
-import { Eraser, MoreHorizontal, PenLine, SquareCheckBig } from "lucide-react";
+import {
+  Calendar,
+  Eraser,
+  MoreHorizontal,
+  PenLine,
+  SquareCheckBig,
+  Wallet,
+} from "lucide-react";
 
 type Props = {
   handleSettlement: (selected: DebtsUpdate) => void;
@@ -97,11 +104,10 @@ export function getDebtsColumn({
                       <p className="truncate w-40 md:w-full">{debt.title}</p>
                     </CardTitle>
                     <CardDescription>
-                      {debt.paid_from ? (
-                        <span>{debt.spentSaving?.name}</span>
-                      ) : (
-                        "-"
-                      )}
+                      <span className="flex flex-row items-center gap-2">
+                        <Wallet className="w-3 h-3" />
+                        {debt.paid_from ? debt.spentSaving?.name : "-"}
+                      </span>
                     </CardDescription>
                   </div>
                 </div>
@@ -116,9 +122,12 @@ export function getDebtsColumn({
                       </Badge>
                     </CardDescription>
                     <CardDescription className="capitalize">
-                      {debt.status === "paid"
-                        ? toLocDate(debt.paid_date!)
-                        : toLocDate(debt.created_at)}
+                      <span className="flex flex-row gap-2 items-center">
+                        <Calendar className="w-3 h-3" />
+                        {debt.status === "paid"
+                          ? toLocDate(debt.paid_date!)
+                          : toLocDate(debt.created_at)}
+                      </span>
                     </CardDescription>
                   </div>
                 </div>

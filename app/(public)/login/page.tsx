@@ -8,7 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Field, FieldDescription, FieldGroup } from "@/components/ui/field";
+import { Field, FieldGroup } from "@/components/ui/field";
 import { createClient } from "@/utils/supabase/client";
 import { Coins } from "lucide-react";
 import { redirect } from "next/navigation";
@@ -43,18 +43,21 @@ function LoginPage() {
   };
 
   return (
-    <div className="bg-muted flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
-      <div className="flex w-full max-w-sm flex-col gap-6">
-        <a href="#" className="flex items-center gap-2 self-center font-medium">
-          <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
-            <Coins />
-          </div>
-          OOang
-        </a>
-        <div className="flex flex-col gap-6">
-          <Card>
+    <div className="bg-gray-200 flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
+      <div className="flex w-full max-w-sm flex-col gap-6 border border-dashed border-slate-400 p-6">
+        <div className="flex flex-col gap-6 border border-dashed border-slate-400">
+          <Card className="bg-gray-200 border-0 rounded-none shadow-none p-10">
+            <a
+              href="#"
+              className="flex items-center gap-2 self-center font-medium"
+            >
+              <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
+                <Coins />
+              </div>
+              OOang
+            </a>
             <CardHeader className="text-center">
-              <CardTitle className="text-xl">Welcome back</CardTitle>
+              <CardTitle className="text-xl">Welcome aboard!</CardTitle>
               <CardDescription>Login with your Google account</CardDescription>
             </CardHeader>
             <CardContent>
@@ -75,17 +78,17 @@ function LoginPage() {
                           fill="currentColor"
                         />
                       </svg>
-                      Login with Google
+                      Google
                     </Button>
                   </Field>
                 </FieldGroup>
               </form>
             </CardContent>
           </Card>
-          <FieldDescription className="px-6 text-center">
+          {/* <FieldDescription className="px-6 text-center">
             By clicking continue, you agree to our{" "}
             <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
-          </FieldDescription>
+          </FieldDescription> */}
         </div>
       </div>
     </div>

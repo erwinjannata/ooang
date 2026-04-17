@@ -15,7 +15,13 @@ import {
 import { toLocDate } from "@/hooks/toLocDate";
 import { IncomeRow, IncomeUpdate } from "@/types/income";
 import { ColumnDef } from "@tanstack/react-table";
-import { Eraser, MoreHorizontal, PenLine } from "lucide-react";
+import {
+  Calendar,
+  Eraser,
+  MoreHorizontal,
+  PenLine,
+  Wallet,
+} from "lucide-react";
 
 type Props = {
   handleEdit: (selected: IncomeUpdate) => void;
@@ -81,15 +87,20 @@ export function getIncomeColumn({
                       {income.title}
                     </CardTitle>
                     <CardDescription className="capitalize">
-                      {income.saving?.name}
+                      <span className="flex flex-row items-center gap-2">
+                        <Wallet className="w-3 h-3" />
+                        {income.saving?.name}
+                      </span>
                     </CardDescription>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="flex justify-end items-end">
-                    <CardTitle className="flex gap-1 text-md"></CardTitle>
-                    <CardDescription className="capitalize">
-                      {toLocDate(income.created_at)}
+                    <CardDescription className="flex gap-1 text-md">
+                      <span className="flex flex-row gap-2 items-center">
+                        <Calendar className="w-3 h-3" />
+                        {toLocDate(income.created_at)}
+                      </span>
                     </CardDescription>
                   </div>
                 </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { updateReceivable } from "@/app/(protected)/receiveables/actions";
+import { updateReceivable } from "@/app/(protected)/receivables/actions";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -88,7 +88,7 @@ function UpdateReceiveablesDialog({
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Receievable Detail</DialogTitle>
+              <DialogTitle>Receivable Detail</DialogTitle>
               <DialogDescription></DialogDescription>
             </DialogHeader>
             <div className="grid gap-6 p-4">
@@ -127,7 +127,7 @@ function UpdateReceiveablesDialog({
                 name="spend_from"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Saving</FormLabel>
+                    <FormLabel>Spent from</FormLabel>
                     <FormControl>
                       <CustomSelect
                         {...field}
