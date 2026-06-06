@@ -23,7 +23,7 @@ export async function fetchIncome({pagination, filter} : {pagination : Paginatio
     const hasPrevPage:boolean = pagination.pageIndex > 0;
     const rows : IncomeRow[] = hasNextPage ? income.slice(0, pagination.pageSize) : income
 
-    return {success: true, message: "Expenses retrieved", data: rows, hasNextPage: hasNextPage, hasPrevPage: hasPrevPage}       
+    return {success: true, message: "Income retrieved", data: rows, hasNextPage: hasNextPage, hasPrevPage: hasPrevPage}       
 }
 
 export async function insertIncome({ data, userId }: { data: IncomeFormData, userId?: string }): Promise<ReturnType> {
@@ -37,7 +37,7 @@ export async function insertIncome({ data, userId }: { data: IncomeFormData, use
 
     if (expenseError) return { success: false, message: expenseError.message }
 
-    return { success: true, message: "Expenses recorded" }
+    return { success: true, message: "Income recorded" }
 }
 
 export async function updateIncome({data, selected} : {data: IncomeFormData, selected: IncomeUpdate}): Promise<ReturnType>{
