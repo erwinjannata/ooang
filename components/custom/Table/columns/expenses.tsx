@@ -49,7 +49,8 @@ export function getExpensesColumn({
             <CardContent>
               <div className="flex flex-row justify-between w-full">
                 <div className="flex items-center gap-1 justify-start">
-                  <span className="font-medium text-xl">
+                  <span className="font-medium text-xl text-red-600">
+                    -{" "}
                     {new Intl.NumberFormat("id-ID", {
                       style: "currency",
                       currency: "IDR",
