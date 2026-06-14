@@ -40,9 +40,8 @@ function FloatingButton({
       variant={variant}
       size={size}
       className={cn(
-        "fixed bottom-6 right-6 z-50 rounded-xl shadow-lg cursor-pointer",
-        "p-0",
-        className
+        "fixed bottom-6 right-6 z-50 rounded-xl shadow-lg cursor-pointer p-0",
+        className,
       )}
       onClick={onClick}
     >

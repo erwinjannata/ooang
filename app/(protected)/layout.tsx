@@ -24,10 +24,11 @@ async function ProtectedRootLayout({
         <AuthProvider user={user} profile={profile} savings={savings}>
           <SidebarTrigger />
           <UserInitialization />
-          <div className="lg:px-10">{children}</div>
+          <div className="lg:px-10 sm:mb-20">{children}</div>
           <Toaster />
         </AuthProvider>
       </main>
+      {/* <BottomNav /> */}
     </SidebarProvider>
   );
 }
